@@ -1,98 +1,106 @@
 # Auto-label PRs based on changed files and PR title
+# Configuration for actions/labeler v5
+# Reference: https://github.com/actions/labeler
 
 # Platform labels
 platform:ios:
-  - ios/**/*
-  - '*.swift'
-  - '*.mm'
-  - '*.h'
-  - '*.podspec'
+- changed-files:
+  - any-glob-to-any-file:
+    - 'ios/**/*'
+    - '*.swift'
+    - '*.mm'
+    - '*.h'
+    - '*.podspec'
 
 platform:android:
-  - android/**/*
-  - '*.kt'
-  - '*.gradle'
-  - '*.xml'
+- changed-files:
+  - any-glob-to-any-file:
+    - 'android/**/*'
+    - '*.kt'
+    - '*.gradle'
+    - '*.xml'
 
 # Area labels
 area:typescript:
-  - src/**/*.ts
-  - src/**/*.tsx
-  - '*.ts'
-  - '*.tsx'
-  - tsconfig*.json
+- changed-files:
+  - any-glob-to-any-file:
+    - 'src/**/*.ts'
+    - 'src/**/*.tsx'
+    - '*.ts'
+    - '*.tsx'
+    - 'tsconfig*.json'
 
 area:ios-native:
-  - ios/**/*.swift
-  - ios/**/*.mm
-  - ios/**/*.h
+- changed-files:
+  - any-glob-to-any-file:
+    - 'ios/**/*.swift'
+    - 'ios/**/*.mm'
+    - 'ios/**/*.h'
 
 area:android-native:
-  - android/**/*.kt
-  - android/**/*.java
+- changed-files:
+  - any-glob-to-any-file:
+    - 'android/**/*.kt'
+    - 'android/**/*.java'
 
 area:docs:
-  - '**/*.md'
-  - docs/**/*
-  - docs-internal/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - '**/*.md'
+    - 'docs/**/*'
+    - 'docs-internal/**/*'
 
 area:ci:
-  - .github/**/*
-  - '**/.github/**/*'
+- changed-files:
+  - any-glob-to-any-file:
+    - '.github/**/*'
+    - '**/.github/**/*'
 
 area:example:
-  - example/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - 'example/**/*'
 
 area:config:
-  - '*.json'
-  - '*.js'
-  - '*.mjs'
-  - babel.config.js
-  - jest.config.js
-  - eslint.config.mjs
-  - turbo.json
+- changed-files:
+  - any-glob-to-any-file:
+    - '*.json'
+    - '*.js'
+    - '*.mjs'
+    - 'babel.config.js'
+    - 'jest.config.js'
+    - 'eslint.config.mjs'
+    - 'turbo.json'
 
-# Type labels (based on PR title)
+# Type labels (based on PR title and branch)
 type:bug:
-  - head-branch: '^(bug|fix|hotfix)/.*'
-  - title: '.*\[Bug\].*'
-  - title: '.*\[Fix\].*'
-  - title: '.*fix.*'
-  - title: '.*bug.*'
+- any:
+  - head-branch: ['^bug/', '^fix/', '^hotfix/']
+  - title: ['.*\[Bug\].*', '.*\[Fix\].*', '.*fix.*', '.*bug.*']
 
 type:feature:
-  - head-branch: '^(feature|feat)/.*'
-  - title: '.*\[Feature\].*'
-  - title: '.*\[Feat\].*'
-  - title: '.*feat.*'
-  - title: '.*feature.*'
+- any:
+  - head-branch: ['^feature/', '^feat/']
+  - title: ['.*\[Feature\].*', '.*\[Feat\].*', '.*feat.*', '.*feature.*']
 
 type:docs:
-  - head-branch: '^(docs|documentation)/.*'
-  - title: '.*\[Docs\].*'
-  - title: '.*\[Documentation\].*'
-  - title: '.*docs.*'
-  - title: '.*documentation.*'
+- any:
+  - head-branch: ['^docs/', '^documentation/']
+  - title: ['.*\[Docs\].*', '.*\[Documentation\].*', '.*docs.*', '.*documentation.*']
 
 type:refactor:
-  - head-branch: '^(refactor)/.*'
-  - title: '.*\[Refactor\].*'
-  - title: '.*refactor.*'
+- any:
+  - head-branch: ['^refactor/']
+  - title: ['.*\[Refactor\].*', '.*refactor.*']
 
 type:chore:
-  - head-branch: '^(chore|ci)/.*'
-  - title: '.*\[Chore\].*'
-  - title: '.*\[CI\].*'
-  - title: '.*chore.*'
-  - title: '.*ci.*'
+- any:
+  - head-branch: ['^chore/', '^ci/']
+  - title: ['.*\[Chore\].*', '.*\[CI\].*', '.*chore.*', '.*ci.*']
 
 # Priority labels
 priority:high:
-  - title: '.*\[High Priority\].*'
-  - title: '.*\[P0\].*'
-  - title: '.*\[Critical\].*'
+- title: ['.*\[High Priority\].*', '.*\[P0\].*', '.*\[Critical\].*']
 
 priority:low:
-  - title: '.*\[Low Priority\].*'
-  - title: '.*\[P3\].*'
-
+- title: ['.*\[Low Priority\].*', '.*\[P3\].*']
