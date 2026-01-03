@@ -213,7 +213,15 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-<!-- markdownlint-enable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://clevique.app/"><img src="https://avatars.githubusercontent.com/u/251686758?v=4?s=100" width="100px;" alt="Clevique.app"/><br /><sub><b>Clevique.app</b></sub></a><br /><a href="https://github.com/Clevique/react-native-simple-scanner/commits?author=Clevique" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
