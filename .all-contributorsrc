@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/all-contributors/all-contributors-cli/main/src/config/schema.json",
+  "files": ["README.md"],
+  "imageSize": 100,
+  "commit": false,
+  "contributorsPerLine": 7,
+  "contributors": [],
+  "projectName": "react-native-simple-scanner",
+  "projectOwner": "Clevique",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
+

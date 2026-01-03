@@ -8,6 +8,7 @@ module.exports = {
     '!src/**/index.{ts,tsx}',
     '!src/types/**',
   ],
+  coverageReporters: ['lcov', 'text', 'text-summary'],
   coverageThreshold: {
     global: {
       branches: 80,

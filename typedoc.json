@@ -1,0 +1,16 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/index.tsx"],
+  "out": "docs-api",
+  "name": "react-native-simple-scanner",
+  "readme": "./README.md",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "theme": "default",
+  "githubPages": false,
+  "gitRevision": "main",
+  "plugin": [],
+  "tsconfig": "./tsconfig.json"
+}

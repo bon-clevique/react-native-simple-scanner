@@ -1,0 +1,47 @@
+name: Scorecard Supply Chain Security
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * 0' # Weekly on Sunday
+  workflow_dispatch:
+
+permissions:
+  security-events: write
+  id-token: write
+  contents: read
+
+jobs:
+  analysis:
+    name: Scorecard Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Run analysis
+        uses: ossf/scorecard-action@e38b1902ae4f44df626f11ba073e63aec8ee0f80 # v2.3.1
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@a669fec729e4e0c611e53c8c48c83c0e4e0c0c0c # v3.28.0
+        if: always()
+        with:
+          sarif_file: results.sarif

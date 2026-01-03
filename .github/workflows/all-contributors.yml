@@ -1,0 +1,60 @@
+name: All Contributors
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  add-contributor:
+    name: Add Contributor
+    runs-on: ubuntu-latest
+    if: |
+      github.event.issue.pull_request != '' ||
+      (github.event.pull_request.merged == true && github.event.pull_request.user.type != 'Bot')
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Add contributor
+        if: github.event_name == 'issue_comment'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          if echo "$COMMENT_BODY" | grep -qE "@all-contributors.*add.*@\w+"; then
+            npx --yes all-contributors-cli add "$(echo "$COMMENT_BODY" | grep -oE '@\w+' | head -1 | sed 's/@//')" "$(echo "$COMMENT_BODY" | grep -oE '(code|doc|bug|test|design|review|maintenance|question|example|translation|tutorial|video|talk|blog|financial|fundingFinding|infra|platform|plugin|projectManagement|security|tool|translation|eventOrganizing|content|userTesting)' | head -1)"
+          fi
+
+      - name: Add contributor from PR
+        if: github.event_name == 'pull_request_target' && github.event.pull_request.merged == true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CONTRIBUTOR="${{ github.event.pull_request.user.login }}"
+          npx --yes all-contributors-cli add "$CONTRIBUTOR" code
+
+      - name: Commit changes
+        if: github.event_name == 'pull_request_target'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md .all-contributorsrc
+          git diff --staged --quiet || git commit -m "docs: add ${{ github.event.pull_request.user.login }} as a contributor [skip ci]"
+          git push

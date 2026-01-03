@@ -1,0 +1,102 @@
+name: Token Expiration Reminder
+
+on:
+  schedule:
+    # 毎月1日と15日の午前9時(JST)にチェック
+    - cron: '0 0 1,15 * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  remind:
+    name: NPM Token Reminder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Ensure labels exist
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const labels = [
+              { name: 'token-reminder', color: 'fbca04', description: 'Token expiration reminder' },
+              { name: 'maintenance', color: '0e8a16', description: 'Maintenance tasks' }
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name
+                });
+                console.log(`Label "${label.name}" already exists`);
+              } catch (e) {
+                if (e.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: label.name,
+                    color: label.color,
+                    description: label.description
+                  });
+                  console.log(`Created label "${label.name}"`);
+                } else {
+                  throw e;
+                }
+              }
+            }
+
+      - name: Create reminder issue
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const title = '🔑 NPM_TOKEN 期限確認リマインダー';
+            const body = `## NPM_TOKEN の期限を確認してください
+
+            NPM Granular Access Token は90日で期限切れになります。
+            期限が切れるとリリースが失敗するため、事前に更新が必要です。
+
+            ### 確認手順
+
+            1. [npm Access Tokens](https://www.npmjs.com/settings) にアクセス
+            2. \`semantic-release-ci\` トークンの期限を確認
+            3. 期限が **14日以内** の場合は以下を実行:
+               - 新しいトークンを発行（Granular Access Token / Read and write）
+               - [GitHub Secrets](https://github.com/${context.repo.owner}/${context.repo.repo}/settings/secrets/actions) の \`NPM_TOKEN\` を更新
+               - 古いトークンを削除
+
+            ### トークン更新後
+
+            このIssueをクローズしてください。
+
+            ---
+            *このIssueは token-reminder ワークフローにより自動作成されました。*
+            *次回リマインダー: 毎月1日と15日*
+            `;
+
+            // 既存のオープンなリマインダーIssueを確認
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'token-reminder'
+            });
+
+            if (issues.data.length === 0) {
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['token-reminder', 'maintenance']
+              });
+              console.log(`Created reminder issue #${issue.data.number}`);
+            } else {
+              console.log(`Reminder issue already exists: #${issues.data[0].number}`);
+            }

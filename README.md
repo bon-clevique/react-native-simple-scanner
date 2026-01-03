@@ -1,5 +1,7 @@
 # react-native-simple-scanner
 
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Clevique/react-native-simple-scanner/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Clevique/react-native-simple-scanner)
+
 A lightweight and simple barcode/QR code scanner for React Native with Fabric View support.
 
 ## Features
@@ -117,7 +119,7 @@ import { BarcodeScannerView } from 'react-native-simple-scanner';
       Alert.alert('Error', error.message);
     }
   }}
-/>
+/>;
 ```
 
 ## API Reference
@@ -128,13 +130,13 @@ Main component for scanning barcodes.
 
 #### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `barcodeTypes` | `BarcodeType[]` | `['qr']` | Array of barcode types to detect |
+| Prop               | Type                              | Default      | Description                              |
+| ------------------ | --------------------------------- | ------------ | ---------------------------------------- |
+| `barcodeTypes`     | `BarcodeType[]`                   | `['qr']`     | Array of barcode types to detect         |
 | `onBarcodeScanned` | `(result: BarcodeResult) => void` | **Required** | Callback fired when a barcode is scanned |
-| `flashEnabled` | `boolean` | `false` | Enable/disable flashlight |
-| `onError` | `(error: Error) => void` | - | Callback fired when an error occurs |
-| `style` | `ViewStyle` | - | Component style |
+| `flashEnabled`     | `boolean`                         | `false`      | Enable/disable flashlight                |
+| `onError`          | `(error: Error) => void`          | -            | Callback fired when an error occurs      |
+| `style`            | `ViewStyle`                       | -            | Component style                          |
 
 ### Types
 
@@ -189,11 +191,13 @@ Make sure you have added `NSCameraUsageDescription` to your `Info.plist`:
 If you encounter build errors:
 
 1. Clean build folders:
+
 ```bash
 pnpm clean
 ```
 
 2. Reinstall pods:
+
 ```bash
 cd ios && pod install && cd ..
 ```
@@ -203,6 +207,18 @@ cd ios && pod install && cd ..
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 ## License
 
