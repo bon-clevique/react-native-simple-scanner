@@ -1,0 +1,68 @@
+name: PR Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  quick-validation:
+    name: Quick PR Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Check for required files
+        run: |
+          if [ ! -f "package.json" ]; then
+            echo "❌ package.json is missing"
+            exit 1
+          fi
+          if [ ! -f "pnpm-lock.yaml" ]; then
+            echo "❌ pnpm-lock.yaml is missing"
+            exit 1
+          fi
+          echo "✅ Required files present"
+
+      - name: Check file changes
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          # Check for suspicious file patterns
+          if echo "$CHANGED_FILES" | grep -qE "\.(lock|log)$"; then
+            echo "⚠️ Warning: Lock files or log files detected in changes"
+          fi
+
+      - name: Validate PR title format
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          if [ -z "$PR_TITLE" ]; then
+            echo "❌ PR title is empty"
+            exit 1
+          fi
+          echo "✅ PR title: $PR_TITLE"
+
+  auto-label:
+    name: Auto Label PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Label PR
+        uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          sync-labels: true
+

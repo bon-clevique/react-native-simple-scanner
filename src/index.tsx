@@ -1,2 +1,4 @@
-export { default as SimpleScannerView } from './SimpleScannerViewNativeComponent';
-export * from './SimpleScannerViewNativeComponent';
+export { BarcodeScannerView } from './BarcodeScannerView';
+export type { BarcodeScannerViewProps } from './BarcodeScannerView';
+export type { BarcodeType, BarcodeResult } from './types';
+export { ScannerErrorCode, ScannerError } from './types';

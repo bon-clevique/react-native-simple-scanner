@@ -6,6 +6,7 @@
 #import <react/renderer/components/SimpleScannerViewSpec/RCTComponentViewHelpers.h>
 
 #import "RCTFabricComponentsPlugins.h"
+#import "react-native-simple-scanner-Swift.h"
 
 using namespace facebook::react;
 
@@ -14,7 +15,7 @@ using namespace facebook::react;
 @end
 
 @implementation SimpleScannerView {
-    UIView * _view;
+    SimpleScannerViewSwift * _swiftView;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
@@ -28,9 +29,10 @@ using namespace facebook::react;
     static const auto defaultProps = std::make_shared<const SimpleScannerViewProps>();
     _props = defaultProps;
 
-    _view = [[UIView alloc] init];
+    _swiftView = [[SimpleScannerViewSwift alloc] initWithFrame:frame];
+    _swiftView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
-    self.contentView = _view;
+    self.contentView = _swiftView;
   }
 
   return self;
@@ -41,10 +43,44 @@ using namespace facebook::react;
     const auto &oldViewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(_props);
     const auto &newViewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(props);
 
-    if (oldViewProps.color != newViewProps.color) {
-        NSString * colorToConvert = [[NSString alloc] initWithUTF8String: newViewProps.color.c_str()];
-        [_view setBackgroundColor:[self hexStringToColor:colorToConvert]];
+    // Update barcodeTypes
+    if (oldViewProps.barcodeTypes != newViewProps.barcodeTypes) {
+        NSMutableArray<NSString *> *barcodeTypes = [NSMutableArray array];
+        for (const auto &type : newViewProps.barcodeTypes) {
+            [barcodeTypes addObject:[NSString stringWithUTF8String:type.c_str()]];
+        }
+        _swiftView.barcodeTypes = barcodeTypes;
     }
+
+    // Update flashEnabled
+    if (oldViewProps.flashEnabled != newViewProps.flashEnabled) {
+        _swiftView.flashEnabled = newViewProps.flashEnabled;
+    }
+
+    // Store event handlers in Swift view
+    __weak SimpleScannerView *weakSelf = self;
+    _swiftView.onBarcodeScanned = ^(NSDictionary *event) {
+        SimpleScannerView *strongSelf = weakSelf;
+        if (!strongSelf) return;
+
+        const auto &viewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(strongSelf->_props);
+        if (viewProps.onBarcodeScanned) {
+            std::string type = [[event objectForKey:@"type"] UTF8String];
+            std::string data = [[event objectForKey:@"data"] UTF8String];
+            viewProps.onBarcodeScanned({type, data});
+        }
+    };
+
+    _swiftView.onScannerError = ^(NSDictionary *event) {
+        SimpleScannerView *strongSelf = weakSelf;
+        if (!strongSelf) return;
+
+        const auto &viewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(strongSelf->_props);
+        if (viewProps.onScannerError) {
+            std::string message = [[event objectForKey:@"message"] UTF8String];
+            viewProps.onScannerError({message});
+        }
+    };
 
     [super updateProps:props oldProps:oldProps];
 }
@@ -52,20 +88,6 @@ using namespace facebook::react;
 Class<RCTComponentViewProtocol> SimpleScannerViewCls(void)
 {
     return SimpleScannerView.class;
-}
-
-- hexStringToColor:(NSString *)stringToConvert
-{
-    NSString *noHashString = [stringToConvert stringByReplacingOccurrencesOfString:@"#" withString:@""];
-    NSScanner *stringScanner = [NSScanner scannerWithString:noHashString];
-
-    unsigned hex;
-    if (![stringScanner scanHexInt:&hex]) return nil;
-    int r = (hex >> 16) & 0xFF;
-    int g = (hex >> 8) & 0xFF;
-    int b = (hex) & 0xFF;
-
-    return [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:1.0f];
 }
 
 @end

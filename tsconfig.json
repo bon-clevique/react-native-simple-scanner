@@ -25,6 +25,8 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ESNext",
+    "types": ["jest", "@types/jest"],
     "verbatimModuleSyntax": true
-  }
+  },
+  "include": ["src/**/*", "jest.setup.js", "jest.config.js"]
 }

@@ -1,0 +1,98 @@
+# Auto-label PRs based on changed files and PR title
+
+# Platform labels
+platform:ios:
+  - ios/**/*
+  - '*.swift'
+  - '*.mm'
+  - '*.h'
+  - '*.podspec'
+
+platform:android:
+  - android/**/*
+  - '*.kt'
+  - '*.gradle'
+  - '*.xml'
+
+# Area labels
+area:typescript:
+  - src/**/*.ts
+  - src/**/*.tsx
+  - '*.ts'
+  - '*.tsx'
+  - tsconfig*.json
+
+area:ios-native:
+  - ios/**/*.swift
+  - ios/**/*.mm
+  - ios/**/*.h
+
+area:android-native:
+  - android/**/*.kt
+  - android/**/*.java
+
+area:docs:
+  - '**/*.md'
+  - docs/**/*
+  - docs-internal/**/*
+
+area:ci:
+  - .github/**/*
+  - '**/.github/**/*'
+
+area:example:
+  - example/**/*
+
+area:config:
+  - '*.json'
+  - '*.js'
+  - '*.mjs'
+  - babel.config.js
+  - jest.config.js
+  - eslint.config.mjs
+  - turbo.json
+
+# Type labels (based on PR title)
+type:bug:
+  - head-branch: '^(bug|fix|hotfix)/.*'
+  - title: '.*\[Bug\].*'
+  - title: '.*\[Fix\].*'
+  - title: '.*fix.*'
+  - title: '.*bug.*'
+
+type:feature:
+  - head-branch: '^(feature|feat)/.*'
+  - title: '.*\[Feature\].*'
+  - title: '.*\[Feat\].*'
+  - title: '.*feat.*'
+  - title: '.*feature.*'
+
+type:docs:
+  - head-branch: '^(docs|documentation)/.*'
+  - title: '.*\[Docs\].*'
+  - title: '.*\[Documentation\].*'
+  - title: '.*docs.*'
+  - title: '.*documentation.*'
+
+type:refactor:
+  - head-branch: '^(refactor)/.*'
+  - title: '.*\[Refactor\].*'
+  - title: '.*refactor.*'
+
+type:chore:
+  - head-branch: '^(chore|ci)/.*'
+  - title: '.*\[Chore\].*'
+  - title: '.*\[CI\].*'
+  - title: '.*chore.*'
+  - title: '.*ci.*'
+
+# Priority labels
+priority:high:
+  - title: '.*\[High Priority\].*'
+  - title: '.*\[P0\].*'
+  - title: '.*\[Critical\].*'
+
+priority:low:
+  - title: '.*\[Low Priority\].*'
+  - title: '.*\[P3\].*'
+
