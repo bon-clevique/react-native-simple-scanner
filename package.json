@@ -50,14 +50,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Clevique/react-native-simple-scanner.git"
+    "url": "git+https://github.com/bon-clevique/react-native-simple-scanner.git"
   },
-  "author": "Clevique <bon@clevique.app> (https://github.com/Clevique)",
+  "author": "Clevique <bon@clevique.app> (https://github.com/bon-clevique)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Clevique/react-native-simple-scanner/issues"
+    "url": "https://github.com/bon-clevique/react-native-simple-scanner/issues"
   },
-  "homepage": "https://github.com/Clevique/react-native-simple-scanner#readme",
+  "homepage": "https://github.com/bon-clevique/react-native-simple-scanner#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

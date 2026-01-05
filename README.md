@@ -1,6 +1,6 @@
 # react-native-simple-scanner
 
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Clevique/react-native-simple-scanner/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Clevique/react-native-simple-scanner)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bon-clevique/react-native-simple-scanner/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bon-clevique/react-native-simple-scanner)
 
 A lightweight and simple barcode/QR code scanner for React Native with Fabric View support.
 
@@ -216,7 +216,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://clevique.app/"><img src="https://avatars.githubusercontent.com/u/251686758?v=4?s=100" width="100px;" alt="Clevique.app"/><br /><sub><b>Clevique.app</b></sub></a><br /><a href="https://github.com/Clevique/react-native-simple-scanner/commits?author=Clevique" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://clevique.app/"><img src="https://avatars.githubusercontent.com/u/251686758?v=4?s=100" width="100px;" alt="Clevique.app"/><br /><sub><b>Clevique.app</b></sub></a><br /><a href="https://github.com/bon-clevique/react-native-simple-scanner/commits?author=Clevique" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
