@@ -70,7 +70,7 @@
     "@eslint/js": "^9.35.0",
     "@react-native/babel-preset": "0.83.1",
     "@size-limit/preset-small-lib": "^11.2.0",
-    "@testing-library/react-native": "^12.4.3",
+    "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^29.5.12",
     "@types/react": "^19.2.0",
     "del-cli": "^6.0.0",
