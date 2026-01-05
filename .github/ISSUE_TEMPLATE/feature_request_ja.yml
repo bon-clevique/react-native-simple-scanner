@@ -1,0 +1,77 @@
+name: 💡 機能リクエスト（日本語）
+description: 新機能や改善のご提案はこちらからお願いします。
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 機能リクエスト
+
+        👋 こんにちは！
+
+        新機能のご提案ありがとうございます！
+        以下のフォームにご記入ください。
+
+  - type: checkboxes
+    attributes:
+      label: 送信前の確認
+      description: 以下を確認してください。
+      options:
+        - label: 既存のIssueやDiscussionを検索し、重複がないことを確認しました。
+          required: true
+        - label: READMEとドキュメントを確認しました。
+          required: true
+
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: 機能の種類
+      description: どのような機能をリクエストしますか？
+      options:
+        - 新しいバーコード形式のサポート
+        - カメラ機能
+        - API の改善
+        - パフォーマンス改善
+        - ドキュメント
+        - その他
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 問題の説明
+      description: |
+        この機能リクエストは何か問題に関連していますか？
+        問題の内容を具体的に説明してください。
+      placeholder: '〜するときに困っています...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 提案する解決策
+      description: |
+        希望する解決策を説明してください。
+        どのような機能が欲しいか、具体的に記載してください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 検討した代替案
+      description: |
+        検討した代替案があれば記載してください。
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 追加情報
+      description: |
+        その他の補足情報、スクリーンショット、コード例などがあれば記載してください。
+    validations:
+      required: false

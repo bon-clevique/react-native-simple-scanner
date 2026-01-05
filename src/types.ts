@@ -37,7 +37,10 @@ export enum ScannerErrorCode {
  * Scanner error with additional context
  */
 export class ScannerError extends Error {
-  constructor(public code: ScannerErrorCode, message: string) {
+  constructor(
+    public code: ScannerErrorCode,
+    message: string
+  ) {
     super(message);
     this.name = 'ScannerError';
   }

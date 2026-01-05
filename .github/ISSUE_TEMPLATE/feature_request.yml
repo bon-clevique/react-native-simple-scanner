@@ -1,0 +1,77 @@
+name: 💡 Feature Request
+description: Suggest a new feature or enhancement for this library.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Feature Request
+
+        👋 Hi!
+
+        Thank you for taking the time to suggest a new feature!
+        Please fill out the following information to help us understand your request.
+
+  - type: checkboxes
+    attributes:
+      label: Before submitting
+      description: Please confirm the following.
+      options:
+        - label: I have searched for existing issues and discussions to avoid duplicates.
+          required: true
+        - label: I have read the [README](https://github.com/bon-clevique/react-native-simple-scanner#readme) and documentation.
+          required: true
+
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: Feature type
+      description: What type of feature are you requesting?
+      options:
+        - New barcode format support
+        - Camera functionality
+        - API enhancement
+        - Performance improvement
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem description
+      description: |
+        Is your feature request related to a problem? Please describe.
+        A clear and concise description of what the problem is.
+      placeholder: "I'm always frustrated when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: |
+        Describe the solution you'd like.
+        A clear and concise description of what you want to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: |
+        Describe any alternative solutions or features you've considered.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: |
+        Add any other context, screenshots, or code examples about the feature request here.
+    validations:
+      required: false

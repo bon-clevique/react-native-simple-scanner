@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Feature Request 💡
-    url: https://github.com/bon-clevique/react-native-simple-scanner/discussions/new?category=ideas
-    about: If you have a feature request, please create a new discussion on GitHub.
-  - name: Discussions on GitHub 💬
+  - name: 💬 Discussions
     url: https://github.com/bon-clevique/react-native-simple-scanner/discussions
-    about: If this library works as promised but you need help, please ask questions there.
+    about: For questions and general discussions, please use GitHub Discussions.
+  - name: 💬 Discussions（日本語）
+    url: https://github.com/bon-clevique/react-native-simple-scanner/discussions
+    about: 質問や一般的な議論は GitHub Discussions をご利用ください。

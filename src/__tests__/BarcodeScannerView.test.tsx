@@ -1,8 +1,8 @@
 import { render, fireEvent } from '@testing-library/react-native';
+import { View } from 'react-native';
 import { BarcodeScannerView } from '../BarcodeScannerView';
 
 jest.mock('../SimpleScannerViewNativeComponent', () => {
-  const { View } = require('react-native');
   return {
     __esModule: true,
     default: jest.fn((props) => <View {...props} testID="native-scanner" />),

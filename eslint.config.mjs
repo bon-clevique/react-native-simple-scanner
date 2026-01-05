@@ -1,29 +1,28 @@
-import { fixupConfigRules } from '@eslint/compat';
-import { FlatCompat } from '@eslint/eslintrc';
-import js from '@eslint/js';
-import prettier from 'eslint-plugin-prettier';
-import { defineConfig } from 'eslint/config';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import prettier from 'eslint-plugin-prettier/recommended';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
-
-export default defineConfig([
+export default tseslint.config(
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+  prettier,
   {
-    extends: fixupConfigRules(compat.extends('@react-native', 'prettier')),
-    plugins: { prettier },
     rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
       'react/react-in-jsx-scope': 'off',
-      'prettier/prettier': 'error',
     },
   },
   {
-    ignores: ['node_modules/', 'lib/', 'jest.setup.js', 'jest.config.js'],
-  },
-]);
+    ignores: [
+      'node_modules/',
+      'lib/',
+      'example/',
+      'android/',
+      '*.config.js',
+      'jest.setup.js',
+    ],
+  }
+);
