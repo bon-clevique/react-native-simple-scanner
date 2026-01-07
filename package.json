@@ -86,7 +86,7 @@
     "react": "19.2.3",
     "react-native": "0.83.1",
     "react-native-builder-bob": "^0.40.17",
-    "react-test-renderer": "19.2.0",
+    "react-test-renderer": "19.2.3",
     "size-limit": "^11.2.0",
     "typedoc": "^0.28.15",
     "typescript": "~5.9.2",
