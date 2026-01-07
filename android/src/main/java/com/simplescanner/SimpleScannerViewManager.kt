@@ -1,6 +1,6 @@
 package com.simplescanner
 
-import android.graphics.Color
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
@@ -30,9 +30,20 @@ class SimpleScannerViewManager : SimpleViewManager<SimpleScannerView>(),
     return SimpleScannerView(context)
   }
 
-  @ReactProp(name = "color")
-  override fun setColor(view: SimpleScannerView?, color: String?) {
-    view?.setBackgroundColor(Color.parseColor(color))
+  @ReactProp(name = "barcodeTypes")
+  override fun setBarcodeTypes(view: SimpleScannerView?, types: ReadableArray?) {
+    if (view != null && types != null) {
+      val typeList = mutableListOf<String>()
+      for (i in 0 until types.size()) {
+        types.getString(i)?.let { typeList.add(it) }
+      }
+      view.setBarcodeTypes(typeList)
+    }
+  }
+
+  @ReactProp(name = "flashEnabled")
+  override fun setFlashEnabled(view: SimpleScannerView?, enabled: Boolean) {
+    view?.setFlashEnabled(enabled)
   }
 
   companion object {

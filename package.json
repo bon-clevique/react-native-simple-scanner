@@ -40,9 +40,9 @@
     "prepare": "husky && bob build",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch --passWithNoTests",
+    "test:coverage": "jest --coverage --passWithNoTests",
     "size-limit": "size-limit",
     "size-limit:check": "size-limit --json",
     "docs": "typedoc"

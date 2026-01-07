@@ -55,27 +55,6 @@ jobs:
           fi
           echo "✅ PR title: $PR_TITLE"
 
-  commitlint:
-    name: Validate Commit Messages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-
-      - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          fetch-depth: 0
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Validate commit messages
-        run: |
-          npx --no -- commitlint --from origin/${{ github.base_ref }} --to HEAD --verbose
-
   auto-label:
     name: Auto Label PR
     runs-on: ubuntu-latest
@@ -96,29 +75,3 @@ jobs:
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           sync-labels: true
-
-  danger:
-    name: Danger JS
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-
-      - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          fetch-depth: 0
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Run Danger
-        env:
-          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx danger ci

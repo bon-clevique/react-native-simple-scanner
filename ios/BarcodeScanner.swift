@@ -135,13 +135,10 @@ public class BarcodeScanner: NSObject {
 
     public func startScanning() {
         guard !session.isRunning else {
-            print("BarcodeScanner: Session already running")
             return
         }
-        print("BarcodeScanner: Starting session")
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.session.startRunning()
-            print("BarcodeScanner: Session started, isRunning: \(self?.session.isRunning ?? false)")
         }
     }
 
