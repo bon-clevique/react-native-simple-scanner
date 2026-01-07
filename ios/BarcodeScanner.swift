@@ -72,8 +72,25 @@ public class BarcodeScanner: NSObject {
 
         // Request permission if not determined
         if status == .notDetermined {
-            // Permission will be requested when first accessing camera
-            // For now, we'll continue setup and it will fail gracefully if denied
+            // Request permission synchronously using semaphore
+            let semaphore = DispatchSemaphore(value: 0)
+            var granted = false
+
+            AVCaptureDevice.requestAccess(for: .video) { accessGranted in
+                granted = accessGranted
+                semaphore.signal()
+            }
+
+            // Wait for permission request to complete (max 10 seconds timeout)
+            let timeout = semaphore.wait(timeout: .now() + 10)
+
+            if timeout == .timedOut {
+                throw BarcodeScannerError.unauthorized
+            }
+
+            if !granted {
+                throw BarcodeScannerError.unauthorized
+            }
         } else if status != .authorized {
             throw BarcodeScannerError.unauthorized
         }
