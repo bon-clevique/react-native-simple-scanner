@@ -69,7 +69,29 @@ public class BarcodeScanner: NSObject {
 
         // Check authorization
         let status = AVCaptureDevice.authorizationStatus(for: .video)
-        guard status == .authorized else {
+
+        // Request permission if not determined
+        if status == .notDetermined {
+            // Request permission synchronously using semaphore
+            let semaphore = DispatchSemaphore(value: 0)
+            var granted = false
+
+            AVCaptureDevice.requestAccess(for: .video) { accessGranted in
+                granted = accessGranted
+                semaphore.signal()
+            }
+
+            // Wait for permission request to complete (max 10 seconds timeout)
+            let timeout = semaphore.wait(timeout: .now() + 10)
+
+            if timeout == .timedOut {
+                throw BarcodeScannerError.unauthorized
+            }
+
+            if !granted {
+                throw BarcodeScannerError.unauthorized
+            }
+        } else if status != .authorized {
             throw BarcodeScannerError.unauthorized
         }
 
@@ -112,9 +134,14 @@ public class BarcodeScanner: NSObject {
     }
 
     public func startScanning() {
-        guard !session.isRunning else { return }
+        guard !session.isRunning else {
+            print("BarcodeScanner: Session already running")
+            return
+        }
+        print("BarcodeScanner: Starting session")
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.session.startRunning()
+            print("BarcodeScanner: Session started, isRunning: \(self?.session.isRunning ?? false)")
         }
     }
 

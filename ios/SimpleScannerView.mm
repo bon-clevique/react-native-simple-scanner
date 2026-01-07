@@ -6,7 +6,8 @@
 #import <react/renderer/components/SimpleScannerViewSpec/RCTComponentViewHelpers.h>
 
 #import "RCTFabricComponentsPlugins.h"
-#import "react-native-simple-scanner-Swift.h"
+#import <AVFoundation/AVFoundation.h>
+#import "SimpleScanner-Swift.h"
 
 using namespace facebook::react;
 
@@ -63,11 +64,14 @@ using namespace facebook::react;
         SimpleScannerView *strongSelf = weakSelf;
         if (!strongSelf) return;
 
-        const auto &viewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(strongSelf->_props);
-        if (viewProps.onBarcodeScanned) {
+        if (strongSelf->_eventEmitter) {
             std::string type = [[event objectForKey:@"type"] UTF8String];
             std::string data = [[event objectForKey:@"data"] UTF8String];
-            viewProps.onBarcodeScanned({type, data});
+            auto emitter = std::static_pointer_cast<SimpleScannerViewEventEmitter const>(strongSelf->_eventEmitter);
+            emitter->onBarcodeScanned(SimpleScannerViewEventEmitter::OnBarcodeScanned{
+                .type = type,
+                .data = data
+            });
         }
     };
 
@@ -75,10 +79,12 @@ using namespace facebook::react;
         SimpleScannerView *strongSelf = weakSelf;
         if (!strongSelf) return;
 
-        const auto &viewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(strongSelf->_props);
-        if (viewProps.onScannerError) {
+        if (strongSelf->_eventEmitter) {
             std::string message = [[event objectForKey:@"message"] UTF8String];
-            viewProps.onScannerError({message});
+            auto emitter = std::static_pointer_cast<SimpleScannerViewEventEmitter const>(strongSelf->_eventEmitter);
+            emitter->onScannerError(SimpleScannerViewEventEmitter::OnScannerError{
+                .message = message
+            });
         }
     };
 

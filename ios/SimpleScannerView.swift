@@ -1,5 +1,6 @@
 import UIKit
 import AVFoundation
+import React
 
 @objc(SimpleScannerViewSwift)
 public class SimpleScannerViewSwift: UIView {
@@ -8,16 +9,16 @@ public class SimpleScannerViewSwift: UIView {
     private var scanner: BarcodeScanner?
     private var previewLayer: AVCaptureVideoPreviewLayer?
 
-    @objc var onBarcodeScanned: RCTDirectEventBlock?
-    @objc var onScannerError: RCTDirectEventBlock?
+    @objc public var onBarcodeScanned: RCTDirectEventBlock?
+    @objc public var onScannerError: RCTDirectEventBlock?
 
-    @objc var barcodeTypes: [String] = ["qr"] {
+    @objc public var barcodeTypes: [String] = ["qr"] {
         didSet {
             updateBarcodeTypes()
         }
     }
 
-    @objc var flashEnabled: Bool = false {
+    @objc public var flashEnabled: Bool = false {
         didSet {
             updateFlash()
         }
@@ -25,12 +26,12 @@ public class SimpleScannerViewSwift: UIView {
 
     // MARK: - Initialization
 
-    override init(frame: CGRect) {
+    @objc public override init(frame: CGRect) {
         super.init(frame: frame)
         setupScanner()
     }
 
-    required init?(coder: NSCoder) {
+    @objc public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupScanner()
     }
@@ -39,11 +40,13 @@ public class SimpleScannerViewSwift: UIView {
 
     public override func layoutSubviews() {
         super.layoutSubviews()
+        print("SimpleScannerView: layoutSubviews called with bounds: \(bounds)")
         previewLayer?.frame = bounds
     }
 
     public override func didMoveToWindow() {
         super.didMoveToWindow()
+        print("SimpleScannerView: didMoveToWindow called, window: \(window != nil ? "present" : "nil")")
         if window != nil {
             startScanning()
         } else {
@@ -58,23 +61,31 @@ public class SimpleScannerViewSwift: UIView {
     // MARK: - Setup
 
     private func setupScanner() {
+        print("SimpleScannerView: setupScanner called")
         scanner = BarcodeScanner()
         scanner?.delegate = self
 
         guard let scanner = scanner else {
+            print("SimpleScannerView: Failed to create scanner")
             return
         }
 
         do {
             try scanner.setupCaptureSession()
+            print("SimpleScannerView: Capture session setup successful")
 
             if let previewLayer = scanner.previewLayer {
                 self.previewLayer = previewLayer
                 previewLayer.frame = bounds
                 previewLayer.videoGravity = .resizeAspectFill
-                layer.addSublayer(previewLayer)
+                previewLayer.backgroundColor = UIColor.black.cgColor
+                layer.insertSublayer(previewLayer, at: 0)
+                print("SimpleScannerView: Preview layer added with frame: \(bounds)")
+            } else {
+                print("SimpleScannerView: Preview layer is nil")
             }
         } catch {
+            print("SimpleScannerView: Setup error: \(error)")
             emitError(error)
         }
     }
@@ -82,10 +93,12 @@ public class SimpleScannerViewSwift: UIView {
     // MARK: - Private Methods
 
     private func startScanning() {
+        print("SimpleScannerView: startScanning called")
         scanner?.startScanning()
     }
 
     private func stopScanning() {
+        print("SimpleScannerView: stopScanning called")
         scanner?.stopScanning()
     }
 
@@ -118,14 +131,14 @@ public class SimpleScannerViewSwift: UIView {
 // MARK: - BarcodeScannerDelegate
 
 extension SimpleScannerViewSwift: BarcodeScannerDelegate {
-    func barcodeScanner(_ scanner: BarcodeScanner, didScan result: BarcodeScanResult) {
+    public func barcodeScanner(_ scanner: BarcodeScanner, didScan result: BarcodeScanResult) {
         onBarcodeScanned?([
             "type": result.type,
             "data": result.data
         ])
     }
 
-    func barcodeScanner(_ scanner: BarcodeScanner, didFailWithError error: Error) {
+    public func barcodeScanner(_ scanner: BarcodeScanner, didFailWithError error: Error) {
         emitError(error)
     }
 }

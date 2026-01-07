@@ -2,6 +2,9 @@
   "name": "react-native-simple-scanner",
   "version": "0.1.0",
   "description": "A lightweight and simple barcode/QR code scanner for React Native",
+  "workspaces": [
+    "example"
+  ],
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
@@ -154,5 +157,8 @@
     "*.{json,md,yml,yaml}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.28.4"
   }
 }
