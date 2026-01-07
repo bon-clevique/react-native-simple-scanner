@@ -1,10 +1,6 @@
 name: Community Management
 
 on:
-  issues:
-    types: [opened]
-  pull_request_target:
-    types: [opened]
   schedule:
     - cron: '0 0 * * *' # Daily at midnight UTC
 
@@ -13,52 +9,6 @@ permissions:
   pull-requests: write
 
 jobs:
-  welcome:
-    name: Welcome First-Time Contributors
-    if: github.event_name != 'schedule'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-
-      - name: Welcome first-time issue
-        if: github.event_name == 'issues'
-        uses: actions/first-interaction@40ac8a838134eca4c0281e3e5c42c6c2c61c0c5c # v1.5.0
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          issue-message: |
-            🎉 Thanks for opening your first issue!
-
-            We appreciate you taking the time to report this. Our team will review it shortly.
-
-            **Before we proceed:**
-            - Please make sure you've read our [Contributing Guidelines](CONTRIBUTING.md)
-            - Check if this issue has already been reported
-            - Provide as much detail as possible (OS version, React Native version, steps to reproduce)
-
-            Thank you for helping improve react-native-simple-scanner! 🙏
-
-      - name: Welcome first-time PR
-        if: github.event_name == 'pull_request_target'
-        uses: actions/first-interaction@40ac8a838134eca4c0281e3e5c42c6c2c61c0c5c # v5.5.0
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          pr-message: |
-            🎉 Thanks for your first pull request!
-
-            We're excited to review your contribution. Please ensure:
-
-            - [ ] Tests pass (`pnpm test`)
-            - [ ] Code follows our style guide (`pnpm lint`)
-            - [ ] Commits follow [Conventional Commits](https://www.conventionalcommits.org/)
-            - [ ] Documentation is updated if needed
-
-            Check out our [Contributing Guidelines](CONTRIBUTING.md) for more details.
-
-            Thank you for contributing to react-native-simple-scanner! 🚀
-
   stale:
     name: Mark Stale Issues and PRs
     if: github.event_name == 'schedule'
