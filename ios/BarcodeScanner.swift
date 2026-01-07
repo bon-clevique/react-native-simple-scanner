@@ -73,6 +73,7 @@ public class BarcodeScanner: NSObject {
         // Request permission if not determined
         if status == .notDetermined {
             // Request permission synchronously using semaphore
+            // Note: This must be called before setting up the capture session
             let semaphore = DispatchSemaphore(value: 0)
             var granted = false
 
