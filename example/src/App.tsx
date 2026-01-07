@@ -4,10 +4,10 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
   Linking,
 } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import {
   BarcodeScannerView,
   type BarcodeResult,
@@ -50,31 +50,33 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <BarcodeScannerView
-        barcodeTypes={['qr', 'ean13', 'ean8', 'code128']}
-        onBarcodeScanned={handleBarcodeScanned}
-        flashEnabled={flashOn}
-        onError={handleError}
-        style={styles.scanner}
-      />
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <BarcodeScannerView
+          barcodeTypes={['qr', 'ean13', 'ean8', 'code128']}
+          onBarcodeScanned={handleBarcodeScanned}
+          flashEnabled={flashOn}
+          onError={handleError}
+          style={styles.scanner}
+        />
 
-      <View style={styles.overlay}>
-        <TouchableOpacity
-          style={styles.flashButton}
-          onPress={() => setFlashOn(!flashOn)}
-        >
-          <Text style={styles.flashText}>{flashOn ? '🔦 ON' : '🔦 OFF'}</Text>
-        </TouchableOpacity>
+        <View style={styles.overlay}>
+          <TouchableOpacity
+            style={styles.flashButton}
+            onPress={() => setFlashOn(!flashOn)}
+          >
+            <Text style={styles.flashText}>{flashOn ? '🔦 ON' : '🔦 OFF'}</Text>
+          </TouchableOpacity>
 
-        {result && (
-          <View style={styles.resultBox}>
-            <Text style={styles.resultType}>{result.type.toUpperCase()}</Text>
-            <Text style={styles.resultData}>{result.data}</Text>
-          </View>
-        )}
-      </View>
-    </SafeAreaView>
+          {result && (
+            <View style={styles.resultBox}>
+              <Text style={styles.resultType}>{result.type.toUpperCase()}</Text>
+              <Text style={styles.resultData}>{result.data}</Text>
+            </View>
+          )}
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
