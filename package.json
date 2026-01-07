@@ -76,7 +76,7 @@
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^29.5.12",
     "@types/react": "^19.2.0",
-    "del-cli": "^6.0.0",
+    "del-cli": "^7.0.0",
     "eslint": "^9.35.0",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
