@@ -1,6 +1,6 @@
 # react-native-simple-scanner
 
-[![npm version](https://badge.fury.io/js/react-native-simple-scanner.svg)](https://www.npmjs.com/package/react-native-simple-scanner)
+[![npm version](https://img.shields.io/npm/v/react-native-simple-scanner.svg)](https://www.npmjs.com/package/react-native-simple-scanner)
 [![npm downloads](https://img.shields.io/npm/dm/react-native-simple-scanner.svg)](https://www.npmjs.com/package/react-native-simple-scanner)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/bon-clevique/react-native-simple-scanner/blob/master/CONTRIBUTING.md)
