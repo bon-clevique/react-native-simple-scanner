@@ -103,13 +103,17 @@ export default function App() {
 
 ```tsx
 import { Linking, Alert } from 'react-native';
-import { BarcodeScannerView } from 'react-native-simple-scanner';
+import {
+  BarcodeScannerView,
+  ScannerError,
+  ScannerErrorCode,
+} from 'react-native-simple-scanner';
 
 <BarcodeScannerView
   barcodeTypes={['qr']}
   onBarcodeScanned={(result) => console.log(result)}
-  onError={(error) => {
-    if (error.message.includes('permission')) {
+  onError={(error: ScannerError) => {
+    if (error.code === ScannerErrorCode.PERMISSION_DENIED) {
       Alert.alert(
         'Camera Permission Required',
         'Please enable camera access in Settings',
@@ -125,6 +129,34 @@ import { BarcodeScannerView } from 'react-native-simple-scanner';
 />;
 ```
 
+### With Scan Interval Control
+
+```tsx
+import { BarcodeScannerView } from 'react-native-simple-scanner';
+
+<BarcodeScannerView
+  barcodeTypes={['qr']}
+  onBarcodeScanned={(result) => console.log(result)}
+  scanInterval={2000} // Prevent duplicate scans for 2 seconds
+  style={{ flex: 1 }}
+/>;
+```
+
+### With Camera Ready Callback
+
+```tsx
+import { BarcodeScannerView } from 'react-native-simple-scanner';
+
+<BarcodeScannerView
+  barcodeTypes={['qr']}
+  onBarcodeScanned={(result) => console.log(result)}
+  onCameraReady={() => {
+    console.log('Camera is ready!');
+  }}
+  style={{ flex: 1 }}
+/>;
+```
+
 ## API Reference
 
 ### `BarcodeScannerView`
@@ -133,13 +165,16 @@ Main component for scanning barcodes.
 
 #### Props
 
-| Prop               | Type                              | Default      | Description                              |
-| ------------------ | --------------------------------- | ------------ | ---------------------------------------- |
-| `barcodeTypes`     | `BarcodeType[]`                   | `['qr']`     | Array of barcode types to detect         |
-| `onBarcodeScanned` | `(result: BarcodeResult) => void` | **Required** | Callback fired when a barcode is scanned |
-| `flashEnabled`     | `boolean`                         | `false`      | Enable/disable flashlight                |
-| `onError`          | `(error: Error) => void`          | -            | Callback fired when an error occurs      |
-| `style`            | `ViewStyle`                       | -            | Component style                          |
+| Prop               | Type                              | Default      | Description                                                                  |
+| ------------------ | --------------------------------- | ------------ | ---------------------------------------------------------------------------- |
+| `barcodeTypes`     | `BarcodeType[]`                   | `['qr']`     | Array of barcode types to detect                                             |
+| `onBarcodeScanned` | `(result: BarcodeResult) => void` | **Required** | Callback fired when a barcode is scanned                                     |
+| `flashEnabled`     | `boolean`                         | `false`      | Enable/disable flashlight                                                    |
+| `onError`          | `(error: ScannerError) => void`   | -            | Callback fired when an error occurs                                          |
+| `scanInterval`     | `number`                          | `1000`       | Minimum interval between scanning the same barcode (ms). Set to 0 to disable |
+| `onCameraReady`    | `() => void`                      | -            | Callback fired when camera is ready                                          |
+| `style`            | `ViewStyle`                       | -            | Component style                                                              |
+| `testID`           | `string`                          | -            | Test ID for testing purposes                                                 |
 
 ### Types
 
@@ -156,6 +191,26 @@ interface BarcodeResult {
   type: BarcodeType;
   data: string;
   timestamp: number;
+}
+```
+
+#### `ScannerError`
+
+```typescript
+class ScannerError extends Error {
+  code: ScannerErrorCode;
+  message: string;
+}
+```
+
+#### `ScannerErrorCode`
+
+```typescript
+enum ScannerErrorCode {
+  CAMERA_UNAVAILABLE = 'CAMERA_UNAVAILABLE',
+  PERMISSION_DENIED = 'PERMISSION_DENIED',
+  CONFIGURATION_FAILED = 'CONFIGURATION_FAILED',
+  UNKNOWN = 'UNKNOWN',
 }
 ```
 

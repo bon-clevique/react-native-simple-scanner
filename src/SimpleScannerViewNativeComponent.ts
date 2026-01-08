@@ -8,6 +8,7 @@ export interface BarcodeScannedEvent {
 
 export interface ScannerErrorEvent {
   message: string;
+  code?: string;
 }
 
 interface NativeProps extends ViewProps {

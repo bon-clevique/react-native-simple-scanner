@@ -104,9 +104,25 @@ public class SimpleScannerViewSwift: UIView {
     }
 
     private func emitError(_ error: Error) {
+        let errorCode = mapErrorToCode(error)
         onScannerError?([
-            "message": error.localizedDescription
+            "message": error.localizedDescription,
+            "code": errorCode
         ])
+    }
+
+    private func mapErrorToCode(_ error: Error) -> String {
+        if let scannerError = error as? BarcodeScannerError {
+            switch scannerError {
+            case .cameraUnavailable:
+                return "CAMERA_UNAVAILABLE"
+            case .unauthorized:
+                return "PERMISSION_DENIED"
+            case .configurationFailed, .invalidDeviceInput:
+                return "CONFIGURATION_FAILED"
+            }
+        }
+        return "UNKNOWN"
     }
 
     private func cleanup() {
