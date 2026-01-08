@@ -1,5 +1,4 @@
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import React from 'react';
 import { type ViewProps } from 'react-native';
 import { BarcodeScannerView } from '../BarcodeScannerView';
 import { ScannerError, ScannerErrorCode } from '../types';
@@ -11,8 +10,8 @@ jest.mock('../SimpleScannerViewNativeComponent', () => {
   const { View: RNView } = require('react-native');
   return {
     __esModule: true,
-    default: React.forwardRef<unknown, ViewProps & { testID?: string }>(
-      (props, ref) => {
+    default: React.forwardRef(
+      (props: ViewProps & { testID?: string }, ref: unknown) => {
         return React.createElement(RNView, {
           ...props,
           ref,

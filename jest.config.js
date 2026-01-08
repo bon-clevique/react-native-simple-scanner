@@ -1,5 +1,5 @@
 module.exports = {
-  testEnvironment: 'node',
+  preset: 'react-native',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   testMatch: ['**/__tests__/**/*.test.{ts,tsx}'],
   transform: {
@@ -26,7 +26,7 @@ module.exports = {
   // },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|react-native-.*)/)',
+    'node_modules/(?!(react-native|@react-native|react-native-.*|@testing-library)/)',
   ],
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js',
