@@ -1,6 +1,9 @@
-import type { BarcodeResult, ScannerError } from '../types';
+import type { BarcodeResult, ScannerError, CameraStatus } from '../types';
+import type { BarcodeScannerViewProps } from '../BarcodeScannerView';
 
-export const mockBarcodeScannerView = jest.fn(() => null);
+export const mockBarcodeScannerView = jest.fn<null, [BarcodeScannerViewProps]>(
+  () => null
+);
 
 export const mockCheckCameraPermission = jest
   .fn()
@@ -13,8 +16,9 @@ export const mockRequestCameraPermission = jest.fn().mockResolvedValue(true);
  */
 export const simulateScan = (result: BarcodeResult) => {
   const lastCall = mockBarcodeScannerView.mock.calls.slice(-1)[0];
-  if (lastCall && lastCall[0]?.onBarcodeScanned) {
-    lastCall[0].onBarcodeScanned(result);
+  const props = lastCall?.[0];
+  if (props && 'onBarcodeScanned' in props && props.onBarcodeScanned) {
+    props.onBarcodeScanned(result);
   }
 };
 
@@ -23,18 +27,20 @@ export const simulateScan = (result: BarcodeResult) => {
  */
 export const simulateError = (error: ScannerError) => {
   const lastCall = mockBarcodeScannerView.mock.calls.slice(-1)[0];
-  if (lastCall && lastCall[0]?.onError) {
-    lastCall[0].onError(error);
+  const props = lastCall?.[0];
+  if (props && 'onError' in props && props.onError) {
+    props.onError(error);
   }
 };
 
 /**
  * Helper to simulate camera status change in tests
  */
-export const simulateCameraStatusChange = (status: string) => {
+export const simulateCameraStatusChange = (status: CameraStatus) => {
   const lastCall = mockBarcodeScannerView.mock.calls.slice(-1)[0];
-  if (lastCall && lastCall[0]?.onCameraStatusChange) {
-    lastCall[0].onCameraStatusChange(status);
+  const props = lastCall?.[0];
+  if (props && 'onCameraStatusChange' in props && props.onCameraStatusChange) {
+    props.onCameraStatusChange(status);
   }
 };
 
