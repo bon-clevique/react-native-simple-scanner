@@ -225,6 +225,12 @@ public class BarcodeScanner: NSObject {
             return .ean8
         case "code128":
             return .code128
+        case "upc-a":
+            return .ean13  // UPC-A is detected as EAN-13 in iOS
+        case "upc-e":
+            return .upce
+        case "code-39":
+            return .code39
         default:
             return nil
         }
@@ -240,6 +246,10 @@ public class BarcodeScanner: NSObject {
             return "ean8"
         case .code128:
             return "code128"
+        case .upce:
+            return "upc-e"
+        case .code39:
+            return "code-39"
         default:
             return "unknown"
         }

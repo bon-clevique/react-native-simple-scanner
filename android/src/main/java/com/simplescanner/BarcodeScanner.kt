@@ -195,6 +195,9 @@ class BarcodeScanner(
       "ean13" -> Barcode.FORMAT_EAN_13
       "ean8" -> Barcode.FORMAT_EAN_8
       "code128" -> Barcode.FORMAT_CODE_128
+      "upc-a" -> Barcode.FORMAT_UPC_A
+      "upc-e" -> Barcode.FORMAT_UPC_E
+      "code-39" -> Barcode.FORMAT_CODE_39
       else -> null
     }
   }
@@ -205,6 +208,9 @@ class BarcodeScanner(
       Barcode.FORMAT_EAN_13 -> "ean13"
       Barcode.FORMAT_EAN_8 -> "ean8"
       Barcode.FORMAT_CODE_128 -> "code128"
+      Barcode.FORMAT_UPC_A -> "upc-a"
+      Barcode.FORMAT_UPC_E -> "upc-e"
+      Barcode.FORMAT_CODE_39 -> "code-39"
       else -> "unknown"
     }
   }

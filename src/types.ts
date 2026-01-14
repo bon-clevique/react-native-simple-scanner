@@ -1,7 +1,14 @@
 /**
  * Supported barcode formats
  */
-export type BarcodeType = 'qr' | 'ean13' | 'ean8' | 'code128';
+export type BarcodeType =
+  | 'qr'
+  | 'ean13'
+  | 'ean8'
+  | 'code128'
+  | 'upc-a'
+  | 'upc-e'
+  | 'code-39';
 
 /**
  * Camera permission status

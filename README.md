@@ -14,7 +14,7 @@ A lightweight and simple barcode/QR code scanner for React Native with Fabric Vi
 - 🔧 **Simple API**: Easy to use, minimal setup
 - 🎯 **TypeScript**: Full TypeScript support with strict mode
 - ⚡ **Fabric View**: React Native new architecture support
-- 📸 **Multiple Formats**: QR Code, EAN-13, EAN-8, CODE-128
+- 📸 **Multiple Formats**: QR Code, EAN-13, EAN-8, CODE-128, UPC-A, UPC-E, Code-39
 
 ## Installation
 
@@ -385,7 +385,14 @@ Main component for scanning barcodes.
 #### `BarcodeType`
 
 ```typescript
-type BarcodeType = 'qr' | 'ean13' | 'ean8' | 'code128';
+type BarcodeType =
+  | 'qr'
+  | 'ean13'
+  | 'ean8'
+  | 'code128'
+  | 'upc-a'
+  | 'upc-e'
+  | 'code-39';
 ```
 
 #### `BarcodeResult`
@@ -496,6 +503,9 @@ describe('ScannerScreen', () => {
 - **EAN-13** (`ean13`): European Article Number (13 digits)
 - **EAN-8** (`ean8`): European Article Number (8 digits)
 - **CODE-128** (`code128`): Code 128 barcodes
+- **UPC-A** (`upc-a`): Universal Product Code Version A (12 digits)
+- **UPC-E** (`upc-e`): Universal Product Code Version E (6 digits)
+- **Code-39** (`code-39`): Code 39 barcodes
 
 ## Requirements
 

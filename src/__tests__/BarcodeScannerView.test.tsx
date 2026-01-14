@@ -143,7 +143,15 @@ describe('BarcodeScannerView', () => {
     const mockCallback = jest.fn();
     const { getByTestId } = render(
       <BarcodeScannerView
-        barcodeTypes={['qr', 'ean13', 'ean8', 'code128']}
+        barcodeTypes={[
+          'qr',
+          'ean13',
+          'ean8',
+          'code128',
+          'upc-a',
+          'upc-e',
+          'code-39',
+        ]}
         onBarcodeScanned={mockCallback}
         testID="scanner"
       />
