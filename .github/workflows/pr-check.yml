@@ -55,6 +55,61 @@ jobs:
           fi
           echo "✅ PR title: $PR_TITLE"
 
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Lint files
+        run: pnpm lint
+
+      - name: Typecheck files
+        run: pnpm typecheck
+
+  test:
+    name: Test & Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Run unit tests
+        run: pnpm test:coverage --maxWorkers=2
+
+      - name: Upload coverage to Codecov
+        if: secrets.CODECOV_TOKEN != ''
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v4
+        with:
+          name: coverage-reports
+          path: coverage/
+          retention-days: 7
+
   auto-label:
     name: Auto Label PR
     runs-on: ubuntu-latest
