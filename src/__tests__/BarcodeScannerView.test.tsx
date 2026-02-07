@@ -418,12 +418,10 @@ describe('BarcodeScannerView', () => {
         nativeEvent: {
           type: 'qr',
           data: 'test123',
-          bounds: {
-            x: 10,
-            y: 20,
-            width: 100,
-            height: 50,
-          },
+          boundsX: 10,
+          boundsY: 20,
+          boundsWidth: 100,
+          boundsHeight: 50,
         },
       });
 

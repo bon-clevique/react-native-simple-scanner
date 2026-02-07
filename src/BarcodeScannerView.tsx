@@ -84,7 +84,8 @@ const BarcodeScannerViewComponent: React.FC<BarcodeScannerViewProps> = ({
 
   const handleBarcodeScanned = useCallback(
     (event: { nativeEvent: BarcodeScannedEvent }) => {
-      const { type, data, bounds } = event.nativeEvent;
+      const { type, data, boundsX, boundsY, boundsWidth, boundsHeight } =
+        event.nativeEvent;
       const now = Date.now();
 
       // Scan interval control
@@ -107,8 +108,18 @@ const BarcodeScannerViewComponent: React.FC<BarcodeScannerViewProps> = ({
       };
 
       // Add bounds if available
-      if (bounds) {
-        result.bounds = bounds;
+      if (
+        boundsX != null &&
+        boundsY != null &&
+        boundsWidth != null &&
+        boundsHeight != null
+      ) {
+        result.bounds = {
+          x: boundsX,
+          y: boundsY,
+          width: boundsWidth,
+          height: boundsHeight,
+        };
       }
 
       onBarcodeScanned(result);

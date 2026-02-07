@@ -161,14 +161,12 @@ extension SimpleScannerViewSwift: BarcodeScannerDelegate {
             "data": result.data
         ]
 
-        // Add bounds if available
+        // Add bounds if available (flattened for Codegen compatibility)
         if let bounds = result.bounds {
-            event["bounds"] = [
-                "x": bounds.origin.x,
-                "y": bounds.origin.y,
-                "width": bounds.size.width,
-                "height": bounds.size.height
-            ]
+            event["boundsX"] = bounds.origin.x
+            event["boundsY"] = bounds.origin.y
+            event["boundsWidth"] = bounds.size.width
+            event["boundsHeight"] = bounds.size.height
         }
 
         onBarcodeScanned?(event)

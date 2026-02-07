@@ -1,15 +1,15 @@
 import { codegenNativeComponent, type ViewProps } from 'react-native';
 import type { DirectEventHandler } from 'react-native/Libraries/Types/CodegenTypes';
 
+type Double = number;
+
 export interface BarcodeScannedEvent {
   type: string;
   data: string;
-  bounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+  boundsX?: Double;
+  boundsY?: Double;
+  boundsWidth?: Double;
+  boundsHeight?: Double;
 }
 
 export interface ScannerErrorEvent {
