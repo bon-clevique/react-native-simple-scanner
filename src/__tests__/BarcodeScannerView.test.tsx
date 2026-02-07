@@ -15,7 +15,7 @@ jest.mock('../SimpleScannerViewNativeComponent', () => {
         return React.createElement(RNView, {
           ...props,
           ref,
-          testID: 'native-scanner',
+          testID: props.testID,
         });
       }
     ),
@@ -63,7 +63,7 @@ describe('BarcodeScannerView', () => {
       />
     );
 
-    const nativeComponent = getByTestId('native-scanner');
+    const nativeComponent = getByTestId('scanner');
     fireEvent(nativeComponent, 'onBarcodeScanned', {
       nativeEvent: { type: 'qr', data: 'test123' },
     });
@@ -88,7 +88,7 @@ describe('BarcodeScannerView', () => {
       />
     );
 
-    const nativeComponent = getByTestId('native-scanner');
+    const nativeComponent = getByTestId('scanner');
     fireEvent(nativeComponent, 'onScannerError', {
       nativeEvent: {
         message: 'Test error',
@@ -113,7 +113,7 @@ describe('BarcodeScannerView', () => {
       />
     );
 
-    const nativeComponent = getByTestId('native-scanner');
+    const nativeComponent = getByTestId('scanner');
     fireEvent(nativeComponent, 'onScannerError', {
       nativeEvent: {
         message: 'Test error',
@@ -172,7 +172,7 @@ describe('BarcodeScannerView', () => {
         />
       );
 
-      const nativeComponent = getByTestId('native-scanner');
+      const nativeComponent = getByTestId('scanner');
 
       // First scan
       fireEvent(nativeComponent, 'onBarcodeScanned', {
@@ -200,7 +200,7 @@ describe('BarcodeScannerView', () => {
         />
       );
 
-      const nativeComponent = getByTestId('native-scanner');
+      const nativeComponent = getByTestId('scanner');
 
       // First scan
       fireEvent(nativeComponent, 'onBarcodeScanned', {
@@ -231,7 +231,7 @@ describe('BarcodeScannerView', () => {
         />
       );
 
-      const nativeComponent = getByTestId('native-scanner');
+      const nativeComponent = getByTestId('scanner');
 
       // First scan
       fireEvent(nativeComponent, 'onBarcodeScanned', {
@@ -259,7 +259,7 @@ describe('BarcodeScannerView', () => {
         />
       );
 
-      const nativeComponent = getByTestId('native-scanner');
+      const nativeComponent = getByTestId('scanner');
 
       // First scan
       fireEvent(nativeComponent, 'onBarcodeScanned', {
@@ -380,7 +380,7 @@ describe('BarcodeScannerView', () => {
         />
       );
 
-      const nativeComponent = getByTestId('native-scanner');
+      const nativeComponent = getByTestId('scanner');
       fireEvent(nativeComponent, 'onCameraStatusChange', {
         nativeEvent: { status: 'ready' },
       });
@@ -413,7 +413,7 @@ describe('BarcodeScannerView', () => {
         />
       );
 
-      const nativeComponent = getByTestId('native-scanner');
+      const nativeComponent = getByTestId('scanner');
       fireEvent(nativeComponent, 'onBarcodeScanned', {
         nativeEvent: {
           type: 'qr',
@@ -452,7 +452,7 @@ describe('BarcodeScannerView', () => {
         />
       );
 
-      const nativeComponent = getByTestId('native-scanner');
+      const nativeComponent = getByTestId('scanner');
       fireEvent(nativeComponent, 'onBarcodeScanned', {
         nativeEvent: { type: 'qr', data: 'test123' },
       });
