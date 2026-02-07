@@ -12,6 +12,7 @@ module.exports = {
     '!src/types/**',
     '!src/**/*NativeComponent.{ts,tsx}',
     '!src/**/react-native-codegen-types.d.ts',
+    '!src/mocks/**',
   ],
   coverageReporters: ['lcov', 'text', 'text-summary'],
   coverageThreshold: {

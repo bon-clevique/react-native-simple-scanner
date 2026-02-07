@@ -165,5 +165,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "fast-xml-parser": ">=5.3.4"
+    }
   }
 }
