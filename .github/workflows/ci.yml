@@ -37,7 +37,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     steps:
       - name: Harden Runner
@@ -89,7 +88,6 @@ jobs:
 
   build-android:
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     steps:
       - name: Harden Runner
@@ -131,7 +129,6 @@ jobs:
 
   build-ios:
     runs-on: macos-latest
-    continue-on-error: true
 
     env:
       XCODE_VERSION: 16.3
