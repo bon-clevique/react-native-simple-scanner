@@ -56,10 +56,15 @@ class BarcodeScanner(
   private var flashEnabled: Boolean = false
 
   private fun createBarcodeScanner(formats: List<Int>): com.google.mlkit.vision.barcode.BarcodeScanner {
-    val formatArray = formats.toTypedArray()
-    val options = BarcodeScannerOptions.Builder()
-      .setBarcodeFormats(*formatArray)
-      .build()
+    val options = if (formats.size > 1) {
+      BarcodeScannerOptions.Builder()
+        .setBarcodeFormats(formats.first(), *formats.drop(1).toIntArray())
+        .build()
+    } else {
+      BarcodeScannerOptions.Builder()
+        .setBarcodeFormats(formats.firstOrNull() ?: Barcode.FORMAT_QR_CODE)
+        .build()
+    }
     return BarcodeScanning.getClient(options)
   }
 

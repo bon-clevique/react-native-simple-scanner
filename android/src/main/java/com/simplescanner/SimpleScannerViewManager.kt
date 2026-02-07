@@ -46,6 +46,11 @@ class SimpleScannerViewManager : SimpleViewManager<SimpleScannerView>(),
     view?.setFlashEnabled(enabled)
   }
 
+  @ReactProp(name = "isScanning")
+  override fun setIsScanning(view: SimpleScannerView?, value: Boolean) {
+    // TODO: implement isScanning toggle on Android
+  }
+
   companion object {
     const val NAME = "SimpleScannerView"
   }
