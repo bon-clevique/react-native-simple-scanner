@@ -164,7 +164,7 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "^7.28.4"
+    "@babel/runtime": "^7.28.6"
   },
   "pnpm": {
     "overrides": {
