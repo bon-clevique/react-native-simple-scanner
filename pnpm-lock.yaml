@@ -111,6 +111,9 @@ importers:
       '@react-native/babel-preset':
         specifier: 0.83.1
         version: 0.83.1(@babel/core@7.28.5)
+      '@react-native/codegen':
+        specifier: 0.83.1
+        version: 0.83.1(@babel/core@7.28.5)
       '@react-native/gradle-plugin':
         specifier: 0.83.1
         version: 0.83.1
@@ -8303,7 +8306,7 @@ snapshots:
   '@react-native/codegen@0.83.1(@babel/core@7.28.5)':
     dependencies:
       '@babel/core': 7.28.5
-      '@babel/parser': 7.28.5
+      '@babel/parser': 7.29.0
       glob: 7.2.3
       hermes-parser: 0.32.0
       invariant: 2.2.4

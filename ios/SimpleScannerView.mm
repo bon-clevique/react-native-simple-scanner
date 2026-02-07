@@ -73,25 +73,18 @@ using namespace facebook::react;
             std::string type = [[event objectForKey:@"type"] UTF8String];
             std::string data = [[event objectForKey:@"data"] UTF8String];
 
-            // Extract bounds if available
             facebook::react::SimpleScannerViewEventEmitter::OnBarcodeScanned payload{
                 .type = type,
                 .data = data
             };
 
-            NSDictionary *boundsDict = [event objectForKey:@"bounds"];
-            if (boundsDict) {
-                double x = [[boundsDict objectForKey:@"x"] doubleValue];
-                double y = [[boundsDict objectForKey:@"y"] doubleValue];
-                double width = [[boundsDict objectForKey:@"width"] doubleValue];
-                double height = [[boundsDict objectForKey:@"height"] doubleValue];
-
-                payload.bounds = std::make_optional(facebook::react::SimpleScannerViewEventEmitter::BarcodeBounds{
-                    .x = x,
-                    .y = y,
-                    .width = width,
-                    .height = height
-                });
+            // Extract flattened bounds if available
+            NSNumber *boundsX = [event objectForKey:@"boundsX"];
+            if (boundsX) {
+                payload.boundsX = [boundsX doubleValue];
+                payload.boundsY = [[event objectForKey:@"boundsY"] doubleValue];
+                payload.boundsWidth = [[event objectForKey:@"boundsWidth"] doubleValue];
+                payload.boundsHeight = [[event objectForKey:@"boundsHeight"] doubleValue];
             }
 
             auto emitter = std::static_pointer_cast<SimpleScannerViewEventEmitter const>(strongSelf->_eventEmitter);
