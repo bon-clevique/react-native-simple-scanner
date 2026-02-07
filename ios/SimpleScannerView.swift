@@ -76,19 +76,22 @@ public class SimpleScannerViewSwift: UIView {
             return
         }
 
-        do {
-            try scanner.setupCaptureSession()
-
-            if let previewLayer = scanner.previewLayer {
-                self.previewLayer = previewLayer
-                previewLayer.frame = bounds
-                previewLayer.videoGravity = .resizeAspectFill
-                previewLayer.backgroundColor = UIColor.black.cgColor
-                layer.insertSublayer(previewLayer, at: 0)
+        scanner.setupCaptureSession { [weak self] error in
+            if let error = error {
+                self?.emitError(error)
+                return
             }
-        } catch {
-            emitError(error)
-            // Status change will be handled by delegate
+            // Preview layer setup should happen on main thread
+            DispatchQueue.main.async {
+                guard let self = self, let scanner = self.scanner else { return }
+                if let previewLayer = scanner.previewLayer {
+                    self.previewLayer = previewLayer
+                    previewLayer.frame = self.bounds
+                    previewLayer.videoGravity = .resizeAspectFill
+                    previewLayer.backgroundColor = UIColor.black.cgColor
+                    self.layer.insertSublayer(previewLayer, at: 0)
+                }
+            }
         }
     }
 

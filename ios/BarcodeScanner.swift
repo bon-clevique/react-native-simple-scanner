@@ -68,18 +68,21 @@ public class BarcodeScanner: NSObject {
 
     // MARK: - Public Methods
 
-    public func setupCaptureSession() throws {
+    public func setupCaptureSession(completion: @escaping (Error?) -> Void) {
         // Notify initializing status
         DispatchQueue.main.async { [weak self] in
-            self?.delegate?.barcodeScanner(self!, didChangeStatus: .initializing)
+            guard let self else { return }
+            self.delegate?.barcodeScanner(self, didChangeStatus: .initializing)
         }
 
         // Check camera availability
         guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
             DispatchQueue.main.async { [weak self] in
-                self?.delegate?.barcodeScanner(self!, didChangeStatus: .error)
+                guard let self else { return }
+                self.delegate?.barcodeScanner(self, didChangeStatus: .error)
             }
-            throw BarcodeScannerError.cameraUnavailable
+            completion(BarcodeScannerError.cameraUnavailable)
+            return
         }
 
         self.device = device
@@ -89,45 +92,44 @@ public class BarcodeScanner: NSObject {
 
         // Request permission if not determined
         if status == .notDetermined {
-            // Request permission synchronously using semaphore
-            // Note: This must be called before setting up the capture session
-            let semaphore = DispatchSemaphore(value: 0)
-            var granted = false
+            // Request permission asynchronously
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] accessGranted in
+                guard let self else { return }
 
-            AVCaptureDevice.requestAccess(for: .video) { accessGranted in
-                granted = accessGranted
-                semaphore.signal()
-            }
-
-            // Wait for permission request to complete (max 10 seconds timeout)
-            let timeout = semaphore.wait(timeout: .now() + 10)
-
-            if timeout == .timedOut {
-                DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.barcodeScanner(self!, didChangeStatus: .permissionRequired)
+                if !accessGranted {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self else { return }
+                        self.delegate?.barcodeScanner(self, didChangeStatus: .permissionRequired)
+                    }
+                    completion(BarcodeScannerError.unauthorized)
+                    return
                 }
-                throw BarcodeScannerError.unauthorized
-            }
 
-            if !granted {
-                DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.barcodeScanner(self!, didChangeStatus: .permissionRequired)
-                }
-                throw BarcodeScannerError.unauthorized
+                // Permission granted, continue with session setup
+                self.continueSetupCaptureSession(with: device, completion: completion)
             }
+            return
         } else if status != .authorized {
             DispatchQueue.main.async { [weak self] in
-                self?.delegate?.barcodeScanner(self!, didChangeStatus: .permissionRequired)
+                guard let self else { return }
+                self.delegate?.barcodeScanner(self, didChangeStatus: .permissionRequired)
             }
-            throw BarcodeScannerError.unauthorized
+            completion(BarcodeScannerError.unauthorized)
+            return
         }
 
+        // Permission already authorized, continue with session setup
+        continueSetupCaptureSession(with: device, completion: completion)
+    }
+
+    private func continueSetupCaptureSession(with device: AVCaptureDevice, completion: @escaping (Error?) -> Void) {
         // Create input
         do {
             let input = try AVCaptureDeviceInput(device: device)
             deviceInput = input
         } catch {
-            throw BarcodeScannerError.invalidDeviceInput
+            completion(BarcodeScannerError.invalidDeviceInput)
+            return
         }
 
         // Configure session
@@ -139,7 +141,8 @@ public class BarcodeScanner: NSObject {
 
         // Add input
         guard session.canAddInput(deviceInput!) else {
-            throw BarcodeScannerError.configurationFailed
+            completion(BarcodeScannerError.configurationFailed)
+            return
         }
         session.addInput(deviceInput!)
 
@@ -148,7 +151,8 @@ public class BarcodeScanner: NSObject {
 
         // Add output
         guard session.canAddOutput(metadataOutput) else {
-            throw BarcodeScannerError.configurationFailed
+            completion(BarcodeScannerError.configurationFailed)
+            return
         }
         session.addOutput(metadataOutput)
 
@@ -161,8 +165,12 @@ public class BarcodeScanner: NSObject {
 
         // Notify ready status
         DispatchQueue.main.async { [weak self] in
-            self?.delegate?.barcodeScanner(self!, didChangeStatus: .ready)
+            guard let self else { return }
+            self.delegate?.barcodeScanner(self, didChangeStatus: .ready)
         }
+
+        // Session setup completed successfully
+        completion(nil)
     }
 
     public func startScanning() {
