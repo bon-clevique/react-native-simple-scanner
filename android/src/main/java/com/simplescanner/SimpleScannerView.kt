@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.camera.view.PreviewView
+import androidx.lifecycle.LifecycleOwner
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.uimanager.ThemedReactContext
@@ -36,8 +37,8 @@ class SimpleScannerView(context: Context) : FrameLayout(context) {
 
     val activity = reactContext.currentActivity
 
-    if (activity != null && previewView != null) {
-      barcodeScanner = BarcodeScanner(context, activity).apply {
+    if (activity != null && activity is LifecycleOwner && previewView != null) {
+      barcodeScanner = BarcodeScanner(context, activity as LifecycleOwner).apply {
         setDelegate(object : BarcodeScannerDelegate {
           override fun onBarcodeScanned(result: BarcodeScanResult) {
             sendBarcodeScannedEvent(result.type, result.data)
