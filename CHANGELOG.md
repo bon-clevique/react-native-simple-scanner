@@ -1,3 +1,14 @@
+## [0.3.1](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.0...v0.3.1) (2026-02-08)
+
+### Bug Fixes
+
+- **ci:** install semantic-release plugins in release workflow ([#71](https://github.com/bon-clevique/react-native-simple-scanner/issues/71)) ([1beae39](https://github.com/bon-clevique/react-native-simple-scanner/commit/1beae39b34399db3a0801b33e346bd0a37f84ce7))
+- correct branch references from main to master ([#66](https://github.com/bon-clevique/react-native-simple-scanner/issues/66)) ([767cd4b](https://github.com/bon-clevique/react-native-simple-scanner/commit/767cd4b1316ac6a2ccb65daf3cbea76770eee1ef))
+- **ios:** resolve thread safety issues in BarcodeScanner ([#67](https://github.com/bon-clevique/react-native-simple-scanner/issues/67)) ([c58a95e](https://github.com/bon-clevique/react-native-simple-scanner/commit/c58a95ef903d25dd7a0033823a53e9db16a8f756))
+- resolve CI failures for test coverage, security audit, codegen, and Android build ([#65](https://github.com/bon-clevique/react-native-simple-scanner/issues/65)) ([1a2dea0](https://github.com/bon-clevique/react-native-simple-scanner/commit/1a2dea06cdb3b4d21955aeb67590069091246801))
+- update Jest transformIgnorePatterns for react-native 0.83.1 ESM compatibility ([#64](https://github.com/bon-clevique/react-native-simple-scanner/issues/64)) ([d3d17fc](https://github.com/bon-clevique/react-native-simple-scanner/commit/d3d17fce2e371aa7ab0444ae437043a3b7de4677))
+- update Obj-C++ bridge for flattened bounds and add codegen to example deps ([#69](https://github.com/bon-clevique/react-native-simple-scanner/issues/69)) ([8b29cec](https://github.com/bon-clevique/react-native-simple-scanner/commit/8b29cec4f776df577763c44cb8122e0428b9b84e)), closes [#65](https://github.com/bon-clevique/react-native-simple-scanner/issues/65)
+
 # Changelog
 
 All notable changes to this project will be documented in this file.

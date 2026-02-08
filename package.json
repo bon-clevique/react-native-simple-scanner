@@ -1,6 +1,6 @@
 {
   "name": "react-native-simple-scanner",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A lightweight and simple barcode/QR code scanner for React Native",
   "workspaces": [
     "example"
