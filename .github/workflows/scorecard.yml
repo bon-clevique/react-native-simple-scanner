@@ -41,7 +41,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@a669fec729e4e0c611e53c8c48c83c0e4e0c0c0c # v3.28.0
+        uses: github/codeql-action/upload-sarif@45cbd0c69e560cd9e7cd7f8c32362050c9b7ded2 # v3.28.0
         if: always()
         with:
           sarif_file: results.sarif
