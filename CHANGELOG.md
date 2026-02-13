@@ -1,3 +1,9 @@
+## [0.3.2](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.1...v0.3.2) (2026-02-13)
+
+### Bug Fixes
+
+- **ios:** support Swift bridging header for static and dynamic frameworks ([#79](https://github.com/bon-clevique/react-native-simple-scanner/issues/79)) ([8aa6db9](https://github.com/bon-clevique/react-native-simple-scanner/commit/8aa6db930686e541aee8782a03114aeb2ffedc37))
+
 ## [0.3.1](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.0...v0.3.1) (2026-02-08)
 
 ### Bug Fixes
