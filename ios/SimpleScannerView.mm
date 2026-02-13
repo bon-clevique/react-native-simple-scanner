@@ -7,7 +7,11 @@
 
 #import "RCTFabricComponentsPlugins.h"
 #import <AVFoundation/AVFoundation.h>
+#if __has_include(<SimpleScanner/SimpleScanner-Swift.h>)
+#import <SimpleScanner/SimpleScanner-Swift.h>
+#else
 #import "SimpleScanner-Swift.h"
+#endif
 
 using namespace facebook::react;
 
