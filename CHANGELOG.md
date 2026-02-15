@@ -1,3 +1,9 @@
+## [0.3.3](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.2...v0.3.3) (2026-02-15)
+
+### Bug Fixes
+
+- **ci:** add react-test-renderer to dependabot react group ([#80](https://github.com/bon-clevique/react-native-simple-scanner/issues/80)) ([2d5ea03](https://github.com/bon-clevique/react-native-simple-scanner/commit/2d5ea03e4d603fb2c48dafa9629dc7891c26f734)), closes [CocoaPods/CocoaPods#12798](https://github.com/CocoaPods/CocoaPods/issues/12798)
+
 ## [0.3.2](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.1...v0.3.2) (2026-02-13)
 
 ### Bug Fixes
