@@ -10,7 +10,7 @@
     "build:ios": "react-native build-ios --mode Debug"
   },
   "dependencies": {
-    "react": "19.2.3",
+    "react": "19.2.4",
     "react-native": "0.83.1",
     "react-native-safe-area-context": "^5.4.0"
   },
@@ -26,7 +26,7 @@
     "@react-native/codegen": "0.83.1",
     "@react-native/gradle-plugin": "0.83.1",
     "@react-native/typescript-config": "0.83.1",
-    "@types/react": "^19.2.8",
+    "@types/react": "^19.2.14",
     "react-native-builder-bob": "^0.40.17",
     "react-native-monorepo-config": "^0.3.1"
   },
