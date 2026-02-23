@@ -1,3 +1,9 @@
+## [0.3.4](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.3...v0.3.4) (2026-02-15)
+
+### Bug Fixes
+
+- **ci:** update actions/stale SHA to v9.1.0 ([#84](https://github.com/bon-clevique/react-native-simple-scanner/issues/84)) ([60677d6](https://github.com/bon-clevique/react-native-simple-scanner/commit/60677d6830984337098b686cf63818e56e603bf8))
+
 ## [0.3.3](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.2...v0.3.3) (2026-02-15)
 
 ### Bug Fixes
