@@ -3,13 +3,13 @@ import UIKit
 
 // MARK: - Types
 
-public enum BarcodeScannerError: Error {
+public enum BarcodeScannerError: LocalizedError {
     case cameraUnavailable
     case invalidDeviceInput
     case unauthorized
     case configurationFailed
 
-    var localizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .cameraUnavailable:
             return "Camera is not available on this device"
@@ -140,11 +140,11 @@ public class BarcodeScanner: NSObject {
         session.inputs.forEach { session.removeInput($0) }
 
         // Add input
-        guard session.canAddInput(deviceInput!) else {
+        guard let input = deviceInput, session.canAddInput(input) else {
             completion(BarcodeScannerError.configurationFailed)
             return
         }
-        session.addInput(deviceInput!)
+        session.addInput(input)
 
         // Remove existing outputs
         session.outputs.forEach { session.removeOutput($0) }

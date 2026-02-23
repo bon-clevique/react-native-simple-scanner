@@ -15,7 +15,6 @@ public class SimpleScannerViewSwift: UIView {
 
     @objc public var barcodeTypes: [String] = ["qr"] {
         didSet {
-            storedBarcodeTypes = barcodeTypes
             updateBarcodeTypes()
         }
     }
@@ -25,8 +24,6 @@ public class SimpleScannerViewSwift: UIView {
             updateFlash()
         }
     }
-
-    private var storedBarcodeTypes: [String] = ["qr"]
 
     @objc public var isScanning: Bool = true {
         didSet {
@@ -107,7 +104,7 @@ public class SimpleScannerViewSwift: UIView {
 
     private func updateBarcodeTypes() {
         if isScanning {
-            scanner?.setBarcodeTypes(storedBarcodeTypes)
+            scanner?.setBarcodeTypes(barcodeTypes)
         } else {
             scanner?.setBarcodeTypes([])
         }

@@ -38,36 +38,7 @@ using namespace facebook::react;
     _swiftView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
     self.contentView = _swiftView;
-  }
 
-  return self;
-}
-
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
-    const auto &oldViewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(_props);
-    const auto &newViewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(props);
-
-    // Update barcodeTypes
-    if (oldViewProps.barcodeTypes != newViewProps.barcodeTypes) {
-        NSMutableArray<NSString *> *barcodeTypes = [NSMutableArray array];
-        for (const auto &type : newViewProps.barcodeTypes) {
-            [barcodeTypes addObject:[NSString stringWithUTF8String:type.c_str()]];
-        }
-        _swiftView.barcodeTypes = barcodeTypes;
-    }
-
-    // Update flashEnabled
-    if (oldViewProps.flashEnabled != newViewProps.flashEnabled) {
-        _swiftView.flashEnabled = newViewProps.flashEnabled;
-    }
-
-    // Update isScanning
-    if (oldViewProps.isScanning != newViewProps.isScanning) {
-        _swiftView.isScanning = newViewProps.isScanning;
-    }
-
-    // Store event handlers in Swift view
     __weak SimpleScannerView *weakSelf = self;
     _swiftView.onBarcodeScanned = ^(NSDictionary *event) {
         SimpleScannerView *strongSelf = weakSelf;
@@ -121,6 +92,34 @@ using namespace facebook::react;
             });
         }
     };
+  }
+
+  return self;
+}
+
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
+{
+    const auto &oldViewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(_props);
+    const auto &newViewProps = *std::static_pointer_cast<SimpleScannerViewProps const>(props);
+
+    // Update barcodeTypes
+    if (oldViewProps.barcodeTypes != newViewProps.barcodeTypes) {
+        NSMutableArray<NSString *> *barcodeTypes = [NSMutableArray array];
+        for (const auto &type : newViewProps.barcodeTypes) {
+            [barcodeTypes addObject:[NSString stringWithUTF8String:type.c_str()]];
+        }
+        _swiftView.barcodeTypes = barcodeTypes;
+    }
+
+    // Update flashEnabled
+    if (oldViewProps.flashEnabled != newViewProps.flashEnabled) {
+        _swiftView.flashEnabled = newViewProps.flashEnabled;
+    }
+
+    // Update isScanning
+    if (oldViewProps.isScanning != newViewProps.isScanning) {
+        _swiftView.isScanning = newViewProps.isScanning;
+    }
 
     [super updateProps:props oldProps:oldProps];
 }

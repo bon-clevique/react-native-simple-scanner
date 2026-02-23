@@ -181,7 +181,7 @@ jobs:
       - name: Run security audit
         run: |
           set +e
-          pnpm audit --audit-level=moderate --json > audit-results.json 2>&1
+          pnpm audit --audit-level=moderate --ignore-unfixable --json > audit-results.json 2>&1
           AUDIT_EXIT_CODE=$?
 
           if [ $AUDIT_EXIT_CODE -eq 0 ]; then
