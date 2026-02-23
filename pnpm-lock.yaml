@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  fast-xml-parser: '>=5.3.4'
+  fast-xml-parser: '>=5.3.6'
   markdown-it: '>=14.1.1'
   qs: '>=6.14.2'
 
@@ -3482,10 +3482,10 @@ packages:
         integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==,
       }
 
-  fast-xml-parser@5.3.5:
+  fast-xml-parser@5.3.7:
     resolution:
       {
-        integrity: sha512-JeaA2Vm9ffQKp9VjvfzObuMCjUYAp5WDYhRYL5LrBPY/jUDlUtOvDfot0vKSkB9tuX885BDHjtw4fZadD95wnA==,
+        integrity: sha512-JzVLro9NQv92pOM/jTCR6mHlJh2FGwtomH8ZQjhFj/R29P2Fnj38OgPJVtcvYw6SuKClhgYuwUZf5b3rd8u2mA==,
       }
     hasBin: true
 
@@ -7613,7 +7613,7 @@ snapshots:
     dependencies:
       '@react-native-community/cli-tools': 20.1.1
       fast-glob: 3.3.3
-      fast-xml-parser: 5.3.5
+      fast-xml-parser: 5.3.7
       picocolors: 1.1.1
 
   '@react-native-community/cli-config-apple@20.1.1':
@@ -7667,7 +7667,7 @@ snapshots:
       '@react-native-community/cli-config-apple': 20.1.1
       '@react-native-community/cli-tools': 20.1.1
       execa: 5.1.1
-      fast-xml-parser: 5.3.5
+      fast-xml-parser: 5.3.7
       picocolors: 1.1.1
 
   '@react-native-community/cli-platform-ios@20.1.1':
@@ -8851,7 +8851,7 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
-  fast-xml-parser@5.3.5:
+  fast-xml-parser@5.3.7:
     dependencies:
       strnum: 2.1.2
 
