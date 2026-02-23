@@ -1,3 +1,9 @@
+## [0.3.5](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.4...v0.3.5) (2026-02-23)
+
+### Bug Fixes
+
+- **ios:** improve error messages and clean up native code smells ([#89](https://github.com/bon-clevique/react-native-simple-scanner/issues/89)) ([f82c552](https://github.com/bon-clevique/react-native-simple-scanner/commit/f82c552e54c87365180c01181ed89e02f1616019))
+
 ## [0.3.4](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.3...v0.3.4) (2026-02-15)
 
 ### Bug Fixes
