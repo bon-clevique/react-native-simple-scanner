@@ -55,59 +55,8 @@ jobs:
           fi
           echo "✅ PR title: $PR_TITLE"
 
-  lint:
-    name: Lint & Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Lint files
-        run: pnpm lint
-
-      - name: Typecheck files
-        run: pnpm typecheck
-
-  test:
-    name: Test & Coverage
-    runs-on: ubuntu-latest
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Run unit tests
-        run: pnpm test:coverage --maxWorkers=2
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/lcov.info
-          fail_ci_if_error: false
-          verbose: true
-
-      - name: Upload coverage reports
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v4
-        with:
-          name: coverage-reports
-          path: coverage/
-          retention-days: 7
+  # ci.yml already runs lint, typecheck, unit tests and coverage for every
+  # opened/synchronized/reopened PR. Label changes only need PR metadata jobs.
 
   auto-label:
     name: Auto Label PR
