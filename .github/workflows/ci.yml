@@ -128,7 +128,8 @@ jobs:
           pnpm --filter react-native-simple-scanner-example build:android
 
   build-ios:
-    runs-on: macos-latest
+    # macos-latest has moved to macOS 26, which no longer contains Xcode 16.4.
+    runs-on: macos-15
 
     env:
       XCODE_VERSION: 16.4
