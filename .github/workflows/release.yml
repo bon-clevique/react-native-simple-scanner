@@ -46,6 +46,27 @@ jobs:
       - name: Build package
         run: pnpm prepare
 
+      - name: Verify package contents
+        env:
+          PACKAGE_MANIFEST: ${{ runner.temp }}/scanner-package-contents.json
+        run: |
+          npm pack --dry-run --ignore-scripts --json > "$PACKAGE_MANIFEST"
+          node <<'NODE'
+          const fs = require('node:fs');
+          const [pkg] = JSON.parse(fs.readFileSync(process.env.PACKAGE_MANIFEST, 'utf8'));
+          const files = new Set(pkg.files.map((file) => file.path));
+          for (const path of [
+            'lib/module/index.js',
+            'lib/typescript/src/index.d.ts',
+            'SimpleScanner.podspec',
+            'ios/SimpleScannerView.mm',
+            'android/src/main/java/com/simplescanner/BarcodeScanner.kt',
+          ]) {
+            if (!files.has(path)) throw new Error(`Missing release file: ${path}`);
+          }
+          console.log(`Verified ${files.size} package files before publishing`);
+          NODE
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
