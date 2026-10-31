@@ -1,3 +1,9 @@
+## [0.3.6](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.5...v0.3.6) (2026-10-31)
+
+### Bug Fixes
+
+- **release:** verify package contents before publishing ([#156](https://github.com/bon-clevique/react-native-simple-scanner/issues/156)) ([bed2f94](https://github.com/bon-clevique/react-native-simple-scanner/commit/bed2f9407947176a61ab9836f84b02d7ce9a35a4))
+
 ## [0.3.5](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.4...v0.3.5) (2026-02-23)
 
 ### Bug Fixes
