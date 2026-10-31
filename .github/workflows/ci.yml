@@ -37,10 +37,26 @@ jobs:
       - name: Lint files
         run: pnpm lint
 
+  typecheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
       - name: Typecheck files
         run: pnpm typecheck
 
   test:
+    name: unit test
     runs-on: ubuntu-latest
 
     steps:
@@ -163,7 +179,22 @@ jobs:
           cd example
           bundle install
           bundle exec pod repo update --verbose
-          bundle exec pod install --project-directory=ios
+          # CocoaPods 1.16.2 can intermittently fail resolving pnpm symlinks.
+          # https://github.com/CocoaPods/CocoaPods/issues/12798
+          pod_install_log="$(mktemp)"
+          for attempt in 1 2 3; do
+            if bundle exec pod install --project-directory=ios > "$pod_install_log" 2>&1; then
+              cat "$pod_install_log"
+              break
+            else
+              pod_status=$?
+              cat "$pod_install_log"
+            fi
+            if ! grep -Fq 'ArgumentError - pathname contains null byte' "$pod_install_log" || [ "$attempt" -eq 3 ]; then
+              exit "$pod_status"
+            fi
+            echo "::warning::CocoaPods null-byte failure; retrying pod install (attempt $((attempt + 1))/3)"
+          done
 
       - name: Build example for iOS
         run: |
