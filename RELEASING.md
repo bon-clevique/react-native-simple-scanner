@@ -5,6 +5,8 @@ runs the reusable CI workflow for that exact commit. The release job starts only
 after **all** jobs in `ci.yml` succeed, then builds the package and runs the lockfile-pinned
 semantic-release toolchain. Pull requests and merge groups run CI without publishing.
 Release runs are serialized and an active publication is not cancelled by a newer push.
+Before publishing, the release job checks that the npm package includes its JS
+entry point, TypeScript declarations, podspec and native implementations.
 
 ## One-time npm configuration
 
@@ -41,10 +43,18 @@ Do not add `registry-url` to setup-node or write an auth token to `.npmrc`.
 
 1. Keep the migration PR in draft until the maintainer approves npm trust setup
    and the publication boundary. Registering trust does not itself publish.
+   npm initially displays **Pending validation** and a deadline. Complete the
+   first authorized publication before the deadline shown in the package settings,
+   then confirm that the connection is validated.
 2. Review the commits since the last release and the proposed tarball contents.
    Merging into `master` starts Release and may publish a new version immediately
    after CI succeeds. A local dry run or `npm whoami` does **not** prove that npm
    will authorize an OIDC publication.
+   semantic-release does not create a version for `ci`, `chore` or `docs` commits
+   alone. A successful workflow can therefore leave npm unchanged. Use
+   `fix(release)` for an intentional patch that repairs the publishing pipeline;
+   check the release log and registry rather than assuming that a green run
+   published a package.
 3. After separate approval to publish, merge the reviewed PR or make the approved
    release commit. Do not rerun an older failed Release: it contains the old
    workflow and may target a different commit.
