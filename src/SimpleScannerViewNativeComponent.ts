@@ -1,15 +1,17 @@
-import { codegenNativeComponent, type ViewProps } from 'react-native';
-import type { DirectEventHandler } from 'react-native/Libraries/Types/CodegenTypes';
-
-type Double = number;
+import {
+  codegenNativeComponent,
+  type CodegenTypes,
+  type HostComponent,
+  type ViewProps,
+} from 'react-native';
 
 export interface BarcodeScannedEvent {
   type: string;
   data: string;
-  boundsX?: Double;
-  boundsY?: Double;
-  boundsWidth?: Double;
-  boundsHeight?: Double;
+  boundsX?: CodegenTypes.Double;
+  boundsY?: CodegenTypes.Double;
+  boundsWidth?: CodegenTypes.Double;
+  boundsHeight?: CodegenTypes.Double;
 }
 
 export interface ScannerErrorEvent {
@@ -25,9 +27,11 @@ interface NativeProps extends ViewProps {
   barcodeTypes?: ReadonlyArray<string>;
   flashEnabled?: boolean;
   isScanning?: boolean;
-  onBarcodeScanned?: DirectEventHandler<BarcodeScannedEvent>;
-  onScannerError?: DirectEventHandler<ScannerErrorEvent>;
-  onCameraStatusChange?: DirectEventHandler<CameraStatusChangeEvent>;
+  onBarcodeScanned?: CodegenTypes.DirectEventHandler<BarcodeScannedEvent>;
+  onScannerError?: CodegenTypes.DirectEventHandler<ScannerErrorEvent>;
+  onCameraStatusChange?: CodegenTypes.DirectEventHandler<CameraStatusChangeEvent>;
 }
 
-export default codegenNativeComponent<NativeProps>('SimpleScannerView');
+export default codegenNativeComponent<NativeProps>(
+  'SimpleScannerView'
+) as HostComponent<NativeProps>;

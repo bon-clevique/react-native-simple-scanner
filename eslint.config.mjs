@@ -19,6 +19,7 @@ export default tseslint.config(
     ignores: [
       'node_modules/',
       'lib/',
+      'docs-api/',
       'example/',
       'android/',
       '*.config.js',

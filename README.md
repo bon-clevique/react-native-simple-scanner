@@ -10,7 +10,7 @@ A lightweight and simple barcode/QR code scanner for React Native with Fabric Vi
 ## Features
 
 - 🚀 **Lightweight**: Bundle size <2MB
-- 📱 **iOS Support**: iOS 14+ (Android coming in Phase 2)
+- 📱 **iOS Support**: iOS 15.1+ with the React Native 0.84.1 development baseline (Android coming in Phase 2)
 - 🔧 **Simple API**: Easy to use, minimal setup
 - 🎯 **TypeScript**: Full TypeScript support with strict mode
 - ⚡ **Fabric View**: React Native new architecture support
@@ -386,13 +386,7 @@ Main component for scanning barcodes.
 
 ```typescript
 type BarcodeType =
-  | 'qr'
-  | 'ean13'
-  | 'ean8'
-  | 'code128'
-  | 'upc-a'
-  | 'upc-e'
-  | 'code-39';
+  'qr' | 'ean13' | 'ean8' | 'code128' | 'upc-a' | 'upc-e' | 'code-39';
 ```
 
 #### `BarcodeResult`
@@ -509,9 +503,22 @@ describe('ScannerScreen', () => {
 
 ## Requirements
 
-- React Native >= 0.72.0
-- iOS >= 14.0
-- TypeScript >= 4.8 (recommended)
+- The development and native-build baseline is React Native 0.84.1 with React 19.2.4 and the New Architecture (Fabric).
+- With this baseline, iOS >= 15.1 and Xcode >= 16.1 are required by React Native. The podspec uses React Native's `min_ios_version_supported`, so the minimum follows the host app's React Native version.
+- React Native's baseline requires Node.js >= 20.19.4. Repository development uses newer build tools requiring Node.js `^22.22.2 || ^24.15.0 || >=26.0.0`; use the version in `.nvmrc`.
+- Android remains experimental: minimum SDK 24, compile SDK >= 36, AGP >= 8.9.1, and JDK 17. CameraX is pinned consistently to 1.6.2 and the bundled ML Kit barcode model to 17.3.0. Camera permission helpers and `isScanning` are not implemented on Android yet.
+- TypeScript 5.9 is used for validation. Older React Native and TypeScript versions are not covered by the current checks.
+
+The wildcard peer dependencies allow host apps to choose their React and React Native versions; they do not guarantee compatibility with every version. A successful typecheck or Codegen run does not verify camera capture or barcode recognition on a device.
+
+### Compatibility checks (2026-11-01)
+
+| React Native / React | Checks                                                                                                    |
+| -------------------- | --------------------------------------------------------------------------------------------------------- |
+| 0.84.1 / 19.2.4      | Library build, typecheck, unit tests, iOS Simulator build, iOS and Android Codegen                        |
+| 0.88.1 / 19.3.1      | Packed-package consumer typecheck with TypeScript 5.9.3 and `skipLibCheck: true`, iOS and Android Codegen |
+
+Native builds and camera behavior on React Native 0.88.1 are not verified. With `skipLibCheck: false`, that version reports errors in its own generated `AnimatedProps`, `VirtualizedList`, and `ReactNativeDocument` declarations; the scanner's declarations resolve without private React Native imports.
 
 ## Troubleshooting
 

@@ -79,6 +79,7 @@ android/generated
 nitrogen/
 
 # Documentation
+docs-api/
 docs-internal/
 *.local.md
 .cursorrules
