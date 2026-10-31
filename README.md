@@ -560,8 +560,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://clevique.app/"><img src="https://avatars.githubusercontent.com/u/251686758?v=4?s=100" width="100px;" alt="Clevique.app"/><br /><sub><b>Clevique.app</b></sub></a><br /><a href="https://github.com/Clevique/react-native-simple-scanner/commits?author=Clevique" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://bonbanbon.notion.site/About-bon-d9ae5bca197d46ec8566250a4ec8f062?pvs=4"><img src="https://avatars.githubusercontent.com/u/91051205?v=4?s=100" width="100px;" alt="bon.clevique"/><br /><sub><b>bon.clevique</b></sub></a><br /><a href="https://github.com/Clevique/react-native-simple-scanner/commits?author=bon-clevique" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://clevique.app/"><img src="https://avatars.githubusercontent.com/u/251686758?v=4&size=100" width="100px" height="100px" alt="Clevique.app"/><br /><sub><b>Clevique.app</b></sub></a><br /><a href="https://github.com/Clevique/react-native-simple-scanner/commits?author=Clevique" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://bonbanbon.notion.site/About-bon-d9ae5bca197d46ec8566250a4ec8f062?pvs=4"><img src="https://avatars.githubusercontent.com/u/91051205?v=4&size=100" width="100px" height="100px" alt="bon.clevique"/><br /><sub><b>bon.clevique</b></sub></a><br /><a href="https://github.com/Clevique/react-native-simple-scanner/commits?author=bon-clevique" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
