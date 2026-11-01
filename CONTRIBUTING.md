@@ -29,6 +29,8 @@ The development-tool overrides in `package.json` replace vulnerable minimatch ve
 
 `patches/typedoc@0.28.20.patch` adapts TypeDoc's removed `Minimatch.matchOne` call to the public partial-match API, preserving traversal of negated patterns. Keep this patch until an upstream TypeDoc release supports minimatch 11; when changing these pins, run the dependency checks, coverage, lint, typecheck, documentation generation, and native CI builds together. These overrides affect development tools, not the scanner's runtime dependencies.
 
+`patches/@react-native__dev-middleware@0.84.1.patch` completes the debugger browser launch on the child process's `spawn` event, handles spawn errors, and releases the detached process reference. Upstream 0.84.1 listens for `data` on the child process with ignored output, leaving the launch pending even after the browser displays the page. The patch preserves Chrome-first discovery, Edge fallback, the system-browser fallback, and launch arguments. Revalidate it when updating React Native; the dependency checks cover successful startup, selection order, and failures.
+
 The [example app](/example/) demonstrates usage of the library. You need to run it to test any changes you make.
 
 It is configured to use the local version of the library, so any changes you make to the library's source code will be reflected in the example app. Changes to the library's JavaScript code will be reflected in the example app without a rebuild, but native code changes will require a rebuild of the example app.

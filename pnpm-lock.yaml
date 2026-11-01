@@ -18,6 +18,9 @@ overrides:
   qs: '>=6.14.2'
 
 patchedDependencies:
+  '@react-native/dev-middleware@0.84.1':
+    hash: 9be3dc76056d6249aaf41b98e1ecdf215bac1f750212d365be832de7f5224c36
+    path: patches/@react-native__dev-middleware@0.84.1.patch
   typedoc@0.28.20:
     hash: 8255b470353468ac2528ed6bc151028a2b041015ec58d7aa795ce901285c56f6
     path: patches/typedoc@0.28.20.patch
@@ -9949,7 +9952,7 @@ snapshots:
 
   '@react-native/community-cli-plugin@0.84.1(@react-native-community/cli@20.2.0(typescript@5.9.3))(@react-native/metro-config@0.84.1(@babel/core@7.29.7))':
     dependencies:
-      '@react-native/dev-middleware': 0.84.1
+      '@react-native/dev-middleware': 0.84.1(patch_hash=9be3dc76056d6249aaf41b98e1ecdf215bac1f750212d365be832de7f5224c36)
       debug: 4.4.3
       invariant: 2.2.4
       metro: 0.83.8
@@ -9966,7 +9969,7 @@ snapshots:
 
   '@react-native/community-cli-plugin@0.84.1(@react-native-community/cli@20.2.0(typescript@6.0.3))(@react-native/metro-config@0.84.1(@babel/core@7.29.7))':
     dependencies:
-      '@react-native/dev-middleware': 0.84.1
+      '@react-native/dev-middleware': 0.84.1(patch_hash=9be3dc76056d6249aaf41b98e1ecdf215bac1f750212d365be832de7f5224c36)
       debug: 4.4.3
       invariant: 2.2.4
       metro: 0.83.8
@@ -9991,7 +9994,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@react-native/dev-middleware@0.84.1':
+  '@react-native/dev-middleware@0.84.1(patch_hash=9be3dc76056d6249aaf41b98e1ecdf215bac1f750212d365be832de7f5224c36)':
     dependencies:
       '@isaacs/ttlcache': 1.4.1
       '@react-native/debugger-frontend': 0.84.1
