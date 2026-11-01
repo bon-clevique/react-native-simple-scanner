@@ -505,11 +505,13 @@ describe('ScannerScreen', () => {
 
 - The development and native-build baseline is React Native 0.84.1 with React 19.2.4 and the New Architecture (Fabric).
 - With this baseline, iOS >= 15.1 and Xcode >= 16.1 are required by React Native. The podspec uses React Native's `min_ios_version_supported`, so the minimum follows the host app's React Native version.
-- React Native's baseline requires Node.js >= 20.19.4. Repository development uses newer build tools requiring Node.js `^22.22.2 || ^24.15.0 || >=26.0.0`; use the version in `.nvmrc`.
+- Node.js must satisfy `^22.23.4 || ^24.22.1 || ^26.12.1`. These floors include the [October 2026 Node.js security fixes](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases), including the eMudhra CA update. Development and CI are pinned to Node.js 24.22.2 in `.nvmrc` and both `.tool-versions` files. This repository enables `engine-strict` to reject incompatible Node.js versions during dependency installation; consumers receive the published `engines.node` requirement, whose enforcement depends on their package-manager settings.
 - Android remains experimental: minimum SDK 24, compile SDK >= 36, AGP >= 8.9.1, and JDK 17. CameraX is pinned consistently to 1.6.2 and the bundled ML Kit barcode model to 17.3.0. Camera permission helpers and `isScanning` are not implemented on Android yet.
 - TypeScript 5.9 is used for validation. Older React Native and TypeScript versions are not covered by the current checks.
 
 The wildcard peer dependencies allow host apps to choose their React and React Native versions; they do not guarantee compatibility with every version. A successful typecheck or Codegen run does not verify camera capture or barcode recognition on a device.
+
+The Node.js floors are a security baseline checked on 2026-11-01, not a guarantee against future vulnerabilities. When a later security release arrives, update the affected `engines.node` floors in both package manifests and the development pins together. Dependency audits do not check the Node.js executable itself.
 
 ### Compatibility checks (2026-11-01)
 
