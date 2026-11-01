@@ -1,5 +1,7 @@
 # npm パッケージ公開手順書
 
+> 以下は初回公開時（0.1.0）の記録です。iOS 14以降・React Nativeの対応範囲、バージョン、認証と公開手順は現行設定と異なります。互換性条件は[READMEのRequirements](README.md#requirements)、現在の公開処理は`.github/workflows/release.yml`と`.releaserc.json`を参照してください。
+
 ## 📋 事前確認事項
 
 ### 現在の状態

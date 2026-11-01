@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { act, render, fireEvent, waitFor } from '@testing-library/react-native';
 import { type ViewProps } from 'react-native';
 import { BarcodeScannerView } from '../BarcodeScannerView';
 import { ScannerError, ScannerErrorCode } from '../types';
@@ -290,7 +290,9 @@ describe('BarcodeScannerView', () => {
       );
 
       // Advance timers to trigger camera ready callback
-      jest.advanceTimersByTime(500);
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
 
       await waitFor(() => {
         expect(mockCameraReady).toHaveBeenCalledTimes(1);

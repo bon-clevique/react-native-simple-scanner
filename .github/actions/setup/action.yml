@@ -23,10 +23,10 @@ runs:
         path: |
           **/node_modules
           ~/.pnpm-store
-        key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/package.json', '!node_modules/**') }}
+        key: ${{ runner.os }}-pnpm-${{ hashFiles('.nvmrc') }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/package.json', '!node_modules/**') }}
         restore-keys: |
-          ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-          ${{ runner.os }}-pnpm-
+          ${{ runner.os }}-pnpm-${{ hashFiles('.nvmrc') }}-${{ hashFiles('pnpm-lock.yaml') }}
+          ${{ runner.os }}-pnpm-${{ hashFiles('.nvmrc') }}-
 
     - name: Install dependencies
       if: steps.pnpm-cache.outputs.cache-hit != 'true'

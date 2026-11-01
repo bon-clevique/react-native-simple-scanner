@@ -2,13 +2,7 @@
  * Supported barcode formats
  */
 export type BarcodeType =
-  | 'qr'
-  | 'ean13'
-  | 'ean8'
-  | 'code128'
-  | 'upc-a'
-  | 'upc-e'
-  | 'code-39';
+  'qr' | 'ean13' | 'ean8' | 'code128' | 'upc-a' | 'upc-e' | 'code-39';
 
 /**
  * Camera permission status
@@ -19,10 +13,7 @@ export type PermissionStatus = 'granted' | 'denied' | 'not-determined';
  * Camera initialization status
  */
 export type CameraStatus =
-  | 'initializing'
-  | 'ready'
-  | 'error'
-  | 'permission-required';
+  'initializing' | 'ready' | 'error' | 'permission-required';
 
 /**
  * Result returned when a barcode is scanned
