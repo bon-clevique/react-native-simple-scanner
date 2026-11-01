@@ -1,3 +1,9 @@
+## [0.3.7](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.6...v0.3.7) (2026-11-01)
+
+### Bug Fixes
+
+- repair scanner compatibility and refresh dependencies ([#157](https://github.com/bon-clevique/react-native-simple-scanner/issues/157)) ([fc58258](https://github.com/bon-clevique/react-native-simple-scanner/commit/fc58258350475333c7959fc7ef9ab1a23a93ea1d))
+
 ## [0.3.6](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.5...v0.3.6) (2026-10-31)
 
 ### Bug Fixes
