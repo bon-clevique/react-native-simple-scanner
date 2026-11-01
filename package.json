@@ -186,7 +186,8 @@
       "qs": ">=6.14.2"
     },
     "patchedDependencies": {
-      "typedoc@0.28.20": "patches/typedoc@0.28.20.patch"
+      "typedoc@0.28.20": "patches/typedoc@0.28.20.patch",
+      "@react-native/dev-middleware@0.84.1": "patches/@react-native__dev-middleware@0.84.1.patch"
     }
   }
 }

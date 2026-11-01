@@ -1,0 +1,17 @@
+diff --git a/dist/utils/DefaultBrowserLauncher.js b/dist/utils/DefaultBrowserLauncher.js
+index 9550585b8555ce9c46079d3c70e040e6d9b1f982..70efcdf87ba87483f01975b16fbe969487b52391 100644
+--- a/dist/utils/DefaultBrowserLauncher.js
++++ b/dist/utils/DefaultBrowserLauncher.js
+@@ -30,9 +30,11 @@ const DefaultBrowserLauncher = {
+         detached: true,
+         stdio: "ignore",
+       });
+-      childProcess.on("data", () => {
++      childProcess.once("spawn", () => {
++        childProcess.unref();
+         resolve();
+       });
++      childProcess.once("error", reject);
+       childProcess.on("close", (code) => {
+         if (code !== 0) {
+           reject(

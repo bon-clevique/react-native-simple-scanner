@@ -1,8 +1,10 @@
 const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
+const { EventEmitter } = require('node:events');
 const {
   mkdirSync,
   mkdtempSync,
+  readFileSync,
   rmSync,
   symlinkSync,
   writeFileSync,
@@ -12,6 +14,7 @@ const { tmpdir } = require('node:os');
 const { dirname, join, relative } = require('node:path');
 const { test } = require('node:test');
 const { pathToFileURL } = require('node:url');
+const { runInNewContext } = require('node:vm');
 
 const root = createRequire(join(__dirname, '../package.json'));
 const from = (parent, name) => createRequire(parent.resolve(name));
@@ -218,6 +221,166 @@ test('React Native development middleware retains Edge discovery API', () => {
   assert.equal(
     typeof middleware('chromium-edge-launcher').Launcher.getFirstInstallation,
     'function'
+  );
+});
+
+function browserLauncherFixture({
+  chromePath = '/mock/chrome',
+  edgePath = '/mock/edge',
+} = {}) {
+  const middleware = from(
+    from(reactNative, '@react-native/community-cli-plugin'),
+    '@react-native/dev-middleware'
+  );
+  const file = join(
+    dirname(middleware.resolve('@react-native/dev-middleware/package.json')),
+    'dist/utils/DefaultBrowserLauncher.js'
+  );
+  const child = new EventEmitter();
+  const spawned = [];
+  const opened = [];
+  let unrefCalls = 0;
+  let edgeLookups = 0;
+  child.unref = () => {
+    unrefCalls += 1;
+  };
+  const module = { exports: {} };
+  runInNewContext(
+    readFileSync(file, 'utf8'),
+    {
+      module,
+      exports: module.exports,
+      require(name) {
+        switch (name) {
+          case '@react-native/debugger-shell':
+            return {};
+          case 'child_process':
+            return {
+              spawn(command, args, options) {
+                spawned.push({
+                  command,
+                  args: Array.from(args),
+                  options: { ...options },
+                });
+                return child;
+              },
+            };
+          case 'chrome-launcher':
+            return {
+              getChromePath() {
+                if (chromePath === null)
+                  throw new Error('Chrome not installed');
+                return chromePath;
+              },
+            };
+          case 'chromium-edge-launcher':
+            return {
+              Launcher: {
+                getFirstInstallation() {
+                  edgeLookups += 1;
+                  return edgePath;
+                },
+              },
+            };
+          case 'open':
+            return async (url) => {
+              opened.push(url);
+            };
+          default:
+            throw new Error(`Unexpected launcher dependency: ${name}`);
+        }
+      },
+    },
+    { filename: file }
+  );
+  return {
+    launcher: module.exports.default,
+    child,
+    spawned,
+    opened,
+    unrefCalls: () => unrefCalls,
+    edgeLookups: () => edgeLookups,
+  };
+}
+
+async function completesAfterSpawn(promise) {
+  let timer;
+  try {
+    const outcome = await Promise.race([
+      promise.then(() => 'resolved'),
+      new Promise((resolve) => {
+        timer = setTimeout(() => resolve('timeout'), 250);
+      }),
+    ]);
+    assert.equal(
+      outcome,
+      'resolved',
+      'launch must finish while the browser remains open'
+    );
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+test('Edge fallback completes on spawn and detaches without waiting for browser exit', async () => {
+  const fixture = browserLauncherFixture({ chromePath: null });
+  const url =
+    'http://127.0.0.1:8081/debugger-frontend/rn_fusebox.html?ws=local';
+  const promise = fixture.launcher.launchDebuggerAppWindow(url);
+  fixture.child.emit('spawn');
+  await completesAfterSpawn(promise);
+  assert.equal(fixture.unrefCalls(), 1);
+  assert.equal(fixture.edgeLookups(), 1);
+  assert.deepEqual(fixture.spawned, [
+    {
+      command: '/mock/edge',
+      args: [`--app=${url}`, '--window-size=1200,600'],
+      options: { detached: true, stdio: 'ignore' },
+    },
+  ]);
+  fixture.child.emit('close', 0);
+});
+
+test('Chrome retains priority over Edge and completes on spawn', async () => {
+  const fixture = browserLauncherFixture();
+  const promise = fixture.launcher.launchDebuggerAppWindow(
+    'http://127.0.0.1:8081'
+  );
+  fixture.child.emit('spawn');
+  await completesAfterSpawn(promise);
+  assert.equal(fixture.spawned[0].command, '/mock/chrome');
+  assert.equal(fixture.edgeLookups(), 0);
+  fixture.child.emit('close', 0);
+});
+
+test('system browser fallback remains available when Chrome and Edge are absent', async () => {
+  const fixture = browserLauncherFixture({ chromePath: null, edgePath: null });
+  await fixture.launcher.launchDebuggerAppWindow('http://127.0.0.1:8081');
+  assert.deepEqual(fixture.opened, ['http://127.0.0.1:8081']);
+  assert.equal(fixture.spawned.length, 0);
+});
+
+test('browser spawn errors reject instead of escaping as unhandled events', async () => {
+  const fixture = browserLauncherFixture({ chromePath: null });
+  const error = Object.assign(new Error('Edge executable unavailable'), {
+    code: 'ENOENT',
+  });
+  const promise = fixture.launcher.launchDebuggerAppWindow(
+    'http://127.0.0.1:8081'
+  );
+  assert.doesNotThrow(() => fixture.child.emit('error', error));
+  await assert.rejects(promise, (actual) => actual === error);
+});
+
+test('browser early nonzero exit retains the launch failure message', async () => {
+  const fixture = browserLauncherFixture({ chromePath: null });
+  const promise = fixture.launcher.launchDebuggerAppWindow(
+    'http://127.0.0.1:8081'
+  );
+  fixture.child.emit('close', 2);
+  await assert.rejects(
+    promise,
+    /Failed to launch debugger app window: \/mock\/edge exited with code 2/
   );
 });
 
