@@ -11,7 +11,7 @@ This project is a monorepo managed using [pnpm workspaces](https://pnpm.io/works
 - The library package in the root directory.
 - An example app in the `example/` directory.
 
-To get started, use [Node.js](https://nodejs.org/) 24.22.2, pinned in [`.nvmrc`](./.nvmrc) and the root and example `.tool-versions` files. Both package manifests require `^22.23.4 || ^24.22.1 || ^26.12.1`, the supported release lines containing the October 2026 security fixes. The repository's `.npmrc` enables `engine-strict`, so dependency installation fails on older patches, unsupported release lines, and prereleases. CI uses `.nvmrc`, and its dependency caches are separated by the Node.js pin.
+To get started, use [Node.js](https://nodejs.org/) 24.22.2, pinned in [`.nvmrc`](./.nvmrc) and the root and example `.tool-versions` files. Both package manifests require `^22.23.4 || ^24.22.1 || ^26.12.1`, the supported release lines containing the October 2026 security fixes. The repository's `.npmrc` enables `engine-strict`, so dependency installation fails on older stable patches and unsupported release lines. Package managers can accept prereleases above these floors, so use the pinned stable version for development and publication. CI uses `.nvmrc`, and its dependency caches are separated by the Node.js pin.
 
 Use `nvm install && nvm use`, or run `asdf install` from the repository root, before installing dependencies. When raising the security baseline, update both manifests and all three version-pin files together; the fixed patch version ensures that development, native builds, and publication use the same Node.js release.
 

@@ -4,7 +4,9 @@ const pkg = require('../package.json');
 module.exports = {
   project: {
     ios: {
-      automaticPodsInstallation: true,
+      // GitHub CI installs Pods explicitly with bounded retries before building.
+      // Avoid a second, unguarded install in the build-ios command.
+      automaticPodsInstallation: process.env.CI !== 'true',
     },
   },
   dependencies: {
