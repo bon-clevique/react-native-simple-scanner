@@ -216,21 +216,10 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Run security audit
-        run: |
-          set +e
-          pnpm audit --audit-level=moderate --ignore-unfixable --json > audit-results.json 2>&1
-          AUDIT_EXIT_CODE=$?
+        run: pnpm audit --audit-level=low
 
-          if [ $AUDIT_EXIT_CODE -eq 0 ]; then
-            echo "✅ No moderate or higher severity vulnerabilities found"
-          else
-            echo "⚠️ Security vulnerabilities detected. Reviewing audit results..."
-            if [ -f audit-results.json ]; then
-              cat audit-results.json | head -100
-            fi
-            echo "::warning::Security vulnerabilities found. Please review and update dependencies."
-            exit 1
-          fi
+      - name: Check dependency security and compatibility
+        run: pnpm test:dependencies
 
   bundle-size:
     name: Bundle Size Check
