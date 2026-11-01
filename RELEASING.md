@@ -34,7 +34,7 @@ therefore be reviewed as changes to publishing authority. Do not add a broader
 publisher or relax 2FA settings to make a run pass.
 
 The workflow uses GitHub-hosted Ubuntu, `id-token: write` only in the release job,
-and Node from `.nvmrc` (24.22.1). semantic-release 25.0.9 and its plugins are
+and Node from `.nvmrc`. semantic-release 25.0.9 and its plugins are
 resolved through `pnpm-lock.yaml`, including `@semantic-release/npm` 13.2.0 and
 its npm CLI 11.21.1. These meet npm's OIDC and the plugins' Node requirements.
 Do not add `registry-url` to setup-node or write an auth token to `.npmrc`.
