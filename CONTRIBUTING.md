@@ -23,6 +23,12 @@ pnpm install
 
 > This project uses pnpm workspaces. Make sure you have [pnpm](https://pnpm.io/) installed.
 
+Run `pnpm test:dependencies` for the dependency security and compatibility regression checks, and `pnpm audit --audit-level=low` for the full audit. CI runs both without advisory exclusions or `--ignore-unfixable`.
+
+The development-tool overrides in `package.json` replace vulnerable minimatch versions with 11.0.3 and alias deepmerge 4.3.1 to the API-compatible `@stackline/deepmerge` 1.1.0. The latter has no runtime dependencies and fixes [CVE-2026-93753](https://github.com/advisories/GHSA-gcqx-w48m-w2h4), for which upstream deepmerge has no released fix. The tests cover Jest's merge behavior and the React Native CLI's array replacement. Chromium Edge launcher 2.0.1 and the older Istanbul plugin's test-exclude 7.0.2 remove the legacy glob/minimatch path without replacing callable APIs in place.
+
+`patches/typedoc@0.28.20.patch` adapts TypeDoc's removed `Minimatch.matchOne` call to the public partial-match API, preserving traversal of negated patterns. Keep this patch until an upstream TypeDoc release supports minimatch 11; when changing these pins, run the dependency checks, coverage, lint, typecheck, documentation generation, and native CI builds together. These overrides affect development tools, not the scanner's runtime dependencies.
+
 The [example app](/example/) demonstrates usage of the library. You need to run it to test any changes you make.
 
 It is configured to use the local version of the library, so any changes you make to the library's source code will be reflected in the example app. Changes to the library's JavaScript code will be reflected in the example app without a rebuild, but native code changes will require a rebuild of the example app.
