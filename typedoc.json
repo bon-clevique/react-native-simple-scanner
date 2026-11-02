@@ -10,7 +10,7 @@
   "excludeInternal": true,
   "theme": "default",
   "githubPages": false,
-  "gitRevision": "main",
+  "gitRevision": "master",
   "plugin": [],
   "tsconfig": "./tsconfig.json"
 }
