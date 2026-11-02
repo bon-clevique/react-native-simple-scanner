@@ -14,16 +14,26 @@ async function main() {
     throw new Error('Pass an absolute, nonexistent destination directory');
   }
   fs.mkdirSync(destination); // Refuse to overwrite another task's files.
-  const response = await fetch(
-    'https://registry.npmjs.org/@react-native-community/template/-/template-0.88.1.tgz'
+  execFileSync(
+    'npm',
+    [
+      'pack',
+      '@react-native-community/template@0.88.1',
+      '--registry=https://registry.npmjs.org',
+      '--ignore-scripts',
+      '--pack-destination',
+      destination,
+    ],
+    { stdio: 'inherit' }
   );
-  if (!response.ok) throw new Error(`Template download: ${response.status}`);
-  const archive = Buffer.from(await response.arrayBuffer());
+  const archivePath = path.join(
+    destination,
+    'react-native-community-template-0.88.1.tgz'
+  );
+  const archive = fs.readFileSync(archivePath);
   const integrity = `sha512-${createHash('sha512').update(archive).digest('base64')}`;
   if (integrity !== templateIntegrity)
     throw new Error('Template hash mismatch');
-  const archivePath = path.join(destination, 'template.tgz');
-  fs.writeFileSync(archivePath, archive);
   execFileSync('tar', ['-xzf', archivePath, '-C', destination]);
   const app = path.join(destination, 'app');
   fs.cpSync(path.join(destination, 'package/template'), app, {
