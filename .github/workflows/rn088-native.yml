@@ -39,6 +39,7 @@ jobs:
           cd "$CONSUMER_ROOT/app"
           pnpm install --ignore-scripts
           pnpm install --frozen-lockfile --ignore-scripts
+          pnpm audit --audit-level=low
           pnpm exec tsc --ignoreConfig --noEmit --skipLibCheck --jsx react-jsx \
             --moduleResolution bundler --module preserve --target es2022 App.tsx
       - name: Install JDK

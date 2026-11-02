@@ -98,7 +98,7 @@ The `package.json` file contains various scripts for common tasks:
 
 ### React Native 0.88 compatibility
 
-The development example stays on React Native 0.84.1. CI also packs the library and builds a separate consumer with the official React Native 0.88.1 template, React 19.3.0, and the example's current `App.tsx`. The template archive is checked against a fixed SHA-512 before extraction. The consumer resolves its own dependencies and then verifies installation against its generated lockfile.
+The development example stays on React Native 0.84.1. CI also packs the library and builds a separate consumer with the official React Native 0.88.1 template, React 19.3.0, and the example's current `App.tsx`. The template archive is checked against a fixed SHA-512 before extraction. The consumer inherits the root's dependency overrides, resolves its own dependencies, then verifies its generated lockfile and runs the full security audit.
 
 To prepare the same consumer locally:
 
@@ -109,6 +109,7 @@ node scripts/prepare-rn088-consumer.cjs "$consumer_root/rn088"
 cd "$consumer_root/rn088/app"
 pnpm install --ignore-scripts
 pnpm install --frozen-lockfile --ignore-scripts
+pnpm audit --audit-level=low
 pnpm exec tsc --ignoreConfig --noEmit --skipLibCheck --jsx react-jsx \
   --moduleResolution bundler --module preserve --target es2022 App.tsx
 ```

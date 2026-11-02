@@ -78,6 +78,7 @@ async function main() {
     )
   );
   manifest.packageManager = library.packageManager;
+  manifest.pnpm = { overrides: library.pnpm.overrides };
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   fs.copyFileSync(
     path.join(root, 'example/src/App.tsx'),
