@@ -5,6 +5,7 @@ on:
     branches:
       - master
     paths:
+      - '.github/workflows/docs.yml'
       - 'src/**'
       - 'docs/**'
       - 'typedoc.json'
@@ -40,10 +41,10 @@ jobs:
         run: pnpm prepare
 
       - name: Generate TypeDoc documentation
-        run: npx typedoc
+        run: pnpm run docs
 
       - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@56afc609e6fbd0b05f025db97857299e2c7aef1a # v3.0.1
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: docs-api
 
@@ -62,5 +63,5 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@d6db9017374505b5c7cd48e5df5e8041bf63cc4c # v4.0.4
+        uses: actions/deploy-pages@decdde0ac072f6dcbe43649d82d9c635fff5b4e4 # v4.0.4
 
