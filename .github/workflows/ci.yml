@@ -19,6 +19,9 @@ permissions:
   contents: read
 
 jobs:
+  rn088-native:
+    uses: ./.github/workflows/rn088-native.yml
+
   lint:
     runs-on: ubuntu-latest
 

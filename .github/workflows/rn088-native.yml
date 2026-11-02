@@ -1,0 +1,72 @@
+name: RN 0.88 Native Compatibility
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  consumer:
+    name: RN 0.88 / ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: Android
+            os: ubuntu-latest
+          - platform: iOS
+            os: macos-26
+    runs-on: ${{ matrix.os }}
+    env:
+      RCT_USE_RN_DEP: 1
+      RCT_USE_PREBUILT_RNCORE: 1
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Set consumer location
+        run: echo "CONSUMER_ROOT=$RUNNER_TEMP/scanner-rn088" >> "$GITHUB_ENV"
+      - name: Build library and prepare official RN 0.88.1 consumer
+        run: |
+          pnpm prepare
+          node scripts/prepare-rn088-consumer.cjs "$CONSUMER_ROOT"
+          cd "$CONSUMER_ROOT/app"
+          pnpm install --ignore-scripts
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm audit --audit-level=low
+          pnpm exec tsc --ignoreConfig --noEmit --skipLibCheck --jsx react-jsx \
+            --moduleResolution bundler --module preserve --target es2022 App.tsx
+      - name: Install JDK
+        if: matrix.platform == 'Android'
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          distribution: zulu
+          java-version: '17'
+      - name: Build Android consumer
+        if: matrix.platform == 'Android'
+        env:
+          JAVA_OPTS: '-XX:MaxHeapSize=6g'
+        run: |
+          cd "$CONSUMER_ROOT/app/android"
+          ./gradlew assembleRelease --no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a
+      - name: Setup Ruby
+        if: matrix.platform == 'iOS'
+        uses: ruby/setup-ruby@8aeb6ff8030dd539317f8e1769a044873b56ea71 # v1.268.0
+        with:
+          ruby-version: '3.3.10'
+      - name: Build iOS consumer
+        if: matrix.platform == 'iOS'
+        run: |
+          cd "$CONSUMER_ROOT/app"
+          gem install cocoapods -v 1.16.2 --no-document
+          pod install --project-directory=ios
+          xcodebuild -workspace ios/HelloWorld.xcworkspace -scheme HelloWorld \
+            -configuration Release -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$CONSUMER_ROOT/DerivedData" CODE_SIGNING_ALLOWED=NO
