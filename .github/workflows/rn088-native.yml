@@ -39,6 +39,8 @@ jobs:
           cd "$CONSUMER_ROOT/app"
           pnpm install --ignore-scripts
           pnpm install --frozen-lockfile --ignore-scripts
+          pnpm exec tsc --ignoreConfig --noEmit --skipLibCheck --jsx react-jsx \
+            --moduleResolution bundler --module preserve --target es2022 App.tsx
       - name: Install JDK
         if: matrix.platform == 'Android'
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0

@@ -88,6 +88,7 @@ async function main() {
     plist,
     fs
       .readFileSync(plist, 'utf8')
+      .replace('Hello App Display Name', 'Scanner RN 0.88')
       .replace(
         '<key>NSLocationWhenInUseUsageDescription</key>',
         '<key>NSCameraUsageDescription</key>\n\t<string>Verify barcode scanning with React Native 0.88.</string>\n\t<key>NSLocationWhenInUseUsageDescription</key>'

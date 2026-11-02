@@ -96,6 +96,27 @@ The `package.json` file contains various scripts for common tasks:
 - `pnpm example android`: run the example app on Android.
 - `pnpm example ios`: run the example app on iOS.
 
+### React Native 0.88 compatibility
+
+The development example stays on React Native 0.84.1. CI also packs the library and builds a separate consumer with the official React Native 0.88.1 template, React 19.3.0, and the example's current `App.tsx`. The template archive is checked against a fixed SHA-512 before extraction. The consumer resolves its own dependencies and then verifies installation against its generated lockfile.
+
+To prepare the same consumer locally:
+
+```sh
+pnpm prepare
+consumer_root="$(mktemp -d)"
+node scripts/prepare-rn088-consumer.cjs "$consumer_root/rn088"
+cd "$consumer_root/rn088/app"
+pnpm install --ignore-scripts
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm exec tsc --ignoreConfig --noEmit --skipLibCheck --jsx react-jsx \
+  --moduleResolution bundler --module preserve --target es2022 App.tsx
+```
+
+The native commands and toolchain setup are in `.github/workflows/rn088-native.yml`. CI builds Android arm64 Release and iOS simulator Release, in addition to the original RN 0.84 checks. Camera preview and barcode decoding still require a physical device; a successful build alone does not establish scan behavior.
+
+Remove the temporary consumer directory when verification is finished.
+
 ### Sending a pull request
 
 > **Working on your first pull request?** You can learn how from this _free_ series: [How to Contribute to an Open Source Project on GitHub](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github).
