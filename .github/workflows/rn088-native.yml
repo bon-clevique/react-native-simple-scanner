@@ -19,7 +19,6 @@ jobs:
             os: macos-26
     runs-on: ${{ matrix.os }}
     env:
-      CONSUMER_ROOT: ${{ runner.temp }}/scanner-rn088
       RCT_USE_RN_DEP: 1
       RCT_USE_PREBUILT_RNCORE: 1
     steps:
@@ -31,6 +30,8 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Setup
         uses: ./.github/actions/setup
+      - name: Set consumer location
+        run: echo "CONSUMER_ROOT=$RUNNER_TEMP/scanner-rn088" >> "$GITHUB_ENV"
       - name: Build library and prepare official RN 0.88.1 consumer
         run: |
           pnpm prepare
