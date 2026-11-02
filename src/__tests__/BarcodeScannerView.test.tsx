@@ -29,6 +29,26 @@ describe('BarcodeScannerView', () => {
   describe('Android camera readiness', () => {
     afterEach(() => jest.restoreAllMocks());
 
+    it('notifies a callback supplied after the native ready event', () => {
+      jest.replaceProperty(Platform, 'OS', 'android');
+      const onReady = jest.fn();
+      const onScan = jest.fn();
+      const { getByTestId, rerender } = render(
+        <BarcodeScannerView onBarcodeScanned={onScan} testID="late-ready" />
+      );
+      fireEvent(getByTestId('late-ready'), 'onCameraStatusChange', {
+        nativeEvent: { status: 'ready' },
+      });
+      rerender(
+        <BarcodeScannerView
+          onBarcodeScanned={onScan}
+          onCameraReady={onReady}
+          testID="late-ready"
+        />
+      );
+      expect(onReady).toHaveBeenCalledTimes(1);
+    });
+
     it('waits for CameraX ready, including after permission is required', () => {
       jest.replaceProperty(Platform, 'OS', 'android');
       const onReady = jest.fn();

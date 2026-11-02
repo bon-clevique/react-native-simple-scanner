@@ -1,6 +1,7 @@
 package com.simplescanner
 
 import android.content.Context
+import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.camera.view.PreviewView
@@ -8,8 +9,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
-import com.facebook.react.common.LifecycleState
 import com.facebook.react.bridge.WritableMap
+import com.facebook.react.common.LifecycleState
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.events.Event
@@ -28,6 +29,12 @@ class SimpleScannerView(context: Context) : FrameLayout(context), LifecycleEvent
   private var hostActive = false
 
   init { addView(previewView) }
+
+  @Suppress("UNUSED_PARAMETER")
+  constructor(context: Context?, attrs: AttributeSet?) : this(context ?: throw IllegalArgumentException("Context cannot be null"))
+
+  @Suppress("UNUSED_PARAMETER")
+  constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : this(context ?: throw IllegalArgumentException("Context cannot be null"))
 
   private fun startCamera() {
     if (dropped || !isAttachedToWindow || !hostActive) return

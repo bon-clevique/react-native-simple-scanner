@@ -143,25 +143,26 @@ const BarcodeScannerViewComponent: React.FC<BarcodeScannerViewProps> = ({
 
   const handleCameraStatusChange = useCallback(
     (event: { nativeEvent: CameraStatusChangeEvent }) => {
-      if (
-        Platform.OS === 'android' &&
-        event.nativeEvent.status === 'ready' &&
-        !readyNotifiedRef.current &&
-        onCameraReady
-      ) {
-        readyNotifiedRef.current = true;
-        onCameraReady();
+      if (Platform.OS === 'android') {
+        setIsCameraReady(event.nativeEvent.status === 'ready');
       }
       if (onCameraStatusChange) {
         onCameraStatusChange(event.nativeEvent.status as CameraStatus);
       }
     },
-    [onCameraReady, onCameraStatusChange]
+    [onCameraStatusChange]
   );
 
-  // Notify when camera is ready (simplified implementation)
+  // Android reports readiness from CameraX; retain the existing iOS fallback.
   useEffect(() => {
-    if (Platform.OS !== 'android' && !isCameraReady && onCameraReady) {
+    if (Platform.OS === 'android') {
+      if (isCameraReady && onCameraReady && !readyNotifiedRef.current) {
+        readyNotifiedRef.current = true;
+        onCameraReady();
+      }
+      return undefined;
+    }
+    if (!isCameraReady && onCameraReady) {
       // Camera readiness is assumed after a short delay
       // In a real implementation, this would be triggered by a native event
       const timer = setTimeout(() => {
