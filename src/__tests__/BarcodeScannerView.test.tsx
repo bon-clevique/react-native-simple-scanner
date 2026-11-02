@@ -1,5 +1,5 @@
 import { act, render, fireEvent, waitFor } from '@testing-library/react-native';
-import { type ViewProps } from 'react-native';
+import { Platform, type ViewProps } from 'react-native';
 import { BarcodeScannerView } from '../BarcodeScannerView';
 import { ScannerError, ScannerErrorCode } from '../types';
 
@@ -26,6 +26,39 @@ jest.mock('../SimpleScannerViewNativeComponent', () => {
 jest.useFakeTimers();
 
 describe('BarcodeScannerView', () => {
+  describe('Android camera readiness', () => {
+    afterEach(() => jest.restoreAllMocks());
+
+    it('waits for CameraX ready, including after permission is required', () => {
+      jest.replaceProperty(Platform, 'OS', 'android');
+      const onReady = jest.fn();
+      const onStatus = jest.fn();
+      const { getByTestId } = render(
+        <BarcodeScannerView
+          onBarcodeScanned={jest.fn()}
+          onCameraReady={onReady}
+          onCameraStatusChange={onStatus}
+          testID="android-scanner"
+        />
+      );
+      const scanner = getByTestId('android-scanner');
+      act(() => jest.advanceTimersByTime(1000));
+      expect(onReady).not.toHaveBeenCalled();
+      fireEvent(scanner, 'onCameraStatusChange', {
+        nativeEvent: { status: 'permission-required' },
+      });
+      expect(onReady).not.toHaveBeenCalled();
+      fireEvent(scanner, 'onCameraStatusChange', {
+        nativeEvent: { status: 'ready' },
+      });
+      fireEvent(scanner, 'onCameraStatusChange', {
+        nativeEvent: { status: 'ready' },
+      });
+      expect(onReady).toHaveBeenCalledTimes(1);
+      expect(onStatus).toHaveBeenCalledWith('permission-required');
+      expect(onStatus).toHaveBeenLastCalledWith('ready');
+    });
+  });
   beforeEach(() => {
     jest.clearAllMocks();
     jest.clearAllTimers();

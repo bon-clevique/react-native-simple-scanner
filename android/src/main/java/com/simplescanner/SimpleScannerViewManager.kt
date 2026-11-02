@@ -46,9 +46,21 @@ class SimpleScannerViewManager : SimpleViewManager<SimpleScannerView>(),
     view?.setFlashEnabled(enabled)
   }
 
-  @ReactProp(name = "isScanning")
+  @ReactProp(name = "isScanning", defaultBoolean = true)
   override fun setIsScanning(view: SimpleScannerView?, value: Boolean) {
-    // TODO: implement isScanning toggle on Android
+    view?.setIsScanning(value)
+  }
+
+  override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> =
+    mutableMapOf(
+      "onBarcodeScanned" to mapOf("registrationName" to "onBarcodeScanned"),
+      "onScannerError" to mapOf("registrationName" to "onScannerError"),
+      "onCameraStatusChange" to mapOf("registrationName" to "onCameraStatusChange")
+    )
+
+  override fun onDropViewInstance(view: SimpleScannerView) {
+    view.cleanup()
+    super.onDropViewInstance(view)
   }
 
   companion object {

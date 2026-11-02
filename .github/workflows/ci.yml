@@ -151,6 +151,10 @@ jobs:
         run: |
           pnpm --filter react-native-simple-scanner-example build:android
 
+      - name: Test Android scanner lifecycle
+        working-directory: example/android
+        run: ./gradlew :react-native-simple-scanner:testDebugUnitTest --no-daemon --console=plain
+
   build-ios:
     # macos-latest has moved to macOS 26, which no longer contains Xcode 16.4.
     runs-on: macos-15

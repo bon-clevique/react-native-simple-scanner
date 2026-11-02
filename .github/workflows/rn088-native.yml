@@ -55,6 +55,7 @@ jobs:
         run: |
           cd "$CONSUMER_ROOT/app/android"
           ./gradlew assembleRelease --no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a
+          ./gradlew :react-native-simple-scanner:testDebugUnitTest --no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a
       - name: Setup Ruby
         if: matrix.platform == 'iOS'
         uses: ruby/setup-ruby@8aeb6ff8030dd539317f8e1769a044873b56ea71 # v1.268.0

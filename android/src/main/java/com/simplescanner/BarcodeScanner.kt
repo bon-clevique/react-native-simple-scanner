@@ -2,23 +2,26 @@ package com.simplescanner
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.hardware.camera2.CameraManager
-import android.os.Build
 import android.util.Log
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.CameraState
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 
 // MARK: - Types
 
@@ -37,6 +40,7 @@ data class BarcodeScanResult(
 interface BarcodeScannerDelegate {
   fun onBarcodeScanned(result: BarcodeScanResult)
   fun onError(error: BarcodeScannerError)
+  fun onCameraStatusChange(status: String) {}
 }
 
 // MARK: - BarcodeScanner
@@ -49,8 +53,14 @@ class BarcodeScanner(
   private var camera: Camera? = null
   private var cameraProvider: ProcessCameraProvider? = null
   private var imageAnalysis: ImageAnalysis? = null
+  private var preview: Preview? = null
+  private var previewView: PreviewView? = null
+  private var cameraObserver: Observer<CameraState>? = null
+  private var onCameraError: ((BarcodeScannerError) -> Unit)? = null
+  private val mainExecutor = ContextCompat.getMainExecutor(context)
   private val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
-  private var barcodeScanner = createBarcodeScanner(listOf(Barcode.FORMAT_QR_CODE))
+  private val state = ScannerState(createBarcodeScanner(listOf(Barcode.FORMAT_QR_CODE)))
+  private var closed = false
 
   private var supportedBarcodeTypes: List<Int> = listOf(Barcode.FORMAT_QR_CODE)
   private var flashEnabled: Boolean = false
@@ -80,71 +90,100 @@ class BarcodeScanner(
   }
 
   fun setupCamera(previewView: PreviewView, onError: (BarcodeScannerError) -> Unit) {
-    if (!checkPermission()) {
-      onError(BarcodeScannerError.PERMISSION_DENIED)
-      return
-    }
-
-    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-
-    cameraProviderFuture.addListener({
-      try {
-        val provider = cameraProviderFuture.get()
-        cameraProvider = provider
-
-        val preview = Preview.Builder().build().also {
-          it.setSurfaceProvider(previewView.surfaceProvider)
-        }
-
-        imageAnalysis = ImageAnalysis.Builder()
-          .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-          .build()
-          .also {
-            it.setAnalyzer(cameraExecutor) { imageProxy ->
-              processImage(imageProxy)
-            }
-          }
-
-        val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-        try {
-          provider.unbindAll()
-          camera = provider.bindToLifecycle(
-            lifecycleOwner,
-            cameraSelector,
-            preview,
-            imageAnalysis
-          )
-
-          updateFlash()
-        } catch (e: Exception) {
-          Log.e("BarcodeScanner", "Use case binding failed", e)
-          onError(BarcodeScannerError.CONFIGURATION_FAILED)
-        }
-      } catch (e: Exception) {
-        Log.e("BarcodeScanner", "Camera initialization failed", e)
-        onError(BarcodeScannerError.CONFIGURATION_FAILED)
-      }
-    }, ContextCompat.getMainExecutor(context))
+    this.previewView = previewView
+    onCameraError = onError
+    startScanning()
   }
 
   fun startScanning() {
-    // CameraX handles lifecycle automatically, so this is mainly for consistency
-    // The camera is already running when bound to lifecycle
+    if (closed) return
+    val target = previewView ?: return
+    if (!checkPermission()) {
+      delegate?.onCameraStatusChange("permission-required")
+      onCameraError?.invoke(BarcodeScannerError.PERMISSION_DENIED)
+      return
+    }
+    val generation = state.start() ?: return
+    delegate?.onCameraStatusChange("initializing")
+    try {
+      val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+      cameraProviderFuture.addListener({
+        if (!state.isCameraCurrent(generation)) return@addListener
+        try {
+          val provider = cameraProviderFuture.get()
+          cameraProvider = provider
+          val selector = CameraSelector.DEFAULT_BACK_CAMERA
+          if (!provider.hasCamera(selector)) {
+            stopScanning()
+            reportCameraError(BarcodeScannerError.CAMERA_UNAVAILABLE)
+            return@addListener
+          }
+          val cameraPreview = Preview.Builder().build().also {
+            it.setSurfaceProvider(target.surfaceProvider)
+          }
+          preview = cameraPreview
+          val analysis = ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+            .also {
+              it.setAnalyzer(cameraExecutor) { imageProxy ->
+                processImage(imageProxy, generation)
+              }
+            }
+          imageAnalysis = analysis
+          val boundCamera = provider.bindToLifecycle(lifecycleOwner, selector, cameraPreview, analysis)
+          camera = boundCamera
+          cameraObserver = Observer<CameraState> { cameraState ->
+            if (state.isCameraCurrent(generation)) {
+              if (cameraState.error != null) {
+                reportCameraError(BarcodeScannerError.CAMERA_UNAVAILABLE)
+              } else if (cameraState.type == CameraState.Type.OPEN) {
+                delegate?.onCameraStatusChange("ready")
+              }
+            }
+          }
+          boundCamera.cameraInfo.cameraState.observe(lifecycleOwner, cameraObserver!!)
+          updateFlash()
+        } catch (e: Exception) {
+          Log.e("BarcodeScanner", "Camera initialization failed", e)
+          stopScanning()
+          reportCameraError(BarcodeScannerError.CONFIGURATION_FAILED)
+        }
+      }, mainExecutor)
+    } catch (e: Exception) {
+      stopScanning()
+      reportCameraError(BarcodeScannerError.CONFIGURATION_FAILED)
+    }
+  }
+
+  private fun reportCameraError(error: BarcodeScannerError) {
+    delegate?.onCameraStatusChange("error")
+    onCameraError?.invoke(error)
   }
 
   fun stopScanning() {
-    cameraProvider?.unbindAll()
+    state.stop()
+    imageAnalysis?.clearAnalyzer()
+    cameraObserver?.let { camera?.cameraInfo?.cameraState?.removeObserver(it) }
+    cameraObserver = null
+    val useCases = listOfNotNull<UseCase>(preview, imageAnalysis)
+    if (useCases.isNotEmpty()) cameraProvider?.unbind(*useCases.toTypedArray())
+    preview = null
+    imageAnalysis = null
     camera = null
   }
 
+  fun setIsScanning(enabled: Boolean) {
+    state.setScanning(enabled)
+  }
+
   fun setBarcodeTypes(types: List<String>) {
-    val newTypes = types.mapNotNull { mapBarcodeType(it) }
+    if (closed) return
+    val newTypes = types.mapNotNull { mapBarcodeType(it) }.distinct()
     if (newTypes != supportedBarcodeTypes) {
+      val decoder = if (newTypes.isEmpty()) null else createBarcodeScanner(newTypes)
+      state.replaceDecoder(decoder)
       supportedBarcodeTypes = newTypes
-      // Recreate scanner with new formats
-      barcodeScanner.close()
-      barcodeScanner = createBarcodeScanner(supportedBarcodeTypes)
     }
   }
 
@@ -154,44 +193,51 @@ class BarcodeScanner(
   }
 
   private fun updateFlash() {
-    camera?.cameraControl?.enableTorch(flashEnabled)
+    val target = camera ?: return
+    if (target.cameraInfo.hasFlashUnit()) target.cameraControl.enableTorch(flashEnabled)
   }
 
-  private fun processImage(imageProxy: androidx.camera.core.ImageProxy) {
-    val mediaImage = imageProxy.image
-    if (mediaImage == null) {
+  @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
+  private fun processImage(imageProxy: ImageProxy, generation: Long) {
+    val lease = state.acquire(generation)
+    if (lease == null) {
       imageProxy.close()
       return
     }
-
-    val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-
-    barcodeScanner.process(image)
-      .addOnSuccessListener { barcodes ->
-        for (barcode in barcodes) {
-          val type = mapBarcodeFormatToString(barcode.format)
-          val rawValue = barcode.rawValue ?: continue
-
-          val result = BarcodeScanResult(type = type, data = rawValue)
-
-          // Emit on main thread
-          android.os.Handler(android.os.Looper.getMainLooper()).post {
-            delegate?.onBarcodeScanned(result)
+    val completed = AtomicBoolean(false)
+    fun finish() {
+      if (completed.compareAndSet(false, true)) {
+        try { imageProxy.close() } finally { lease.close() }
+      }
+    }
+    try {
+      val mediaImage = imageProxy.image
+      if (mediaImage == null) {
+        finish()
+        return
+      }
+      val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+      lease.decoder.process(image)
+        .addOnSuccessListener(mainExecutor) { barcodes ->
+          if (state.canDeliver(lease)) {
+            barcodes.firstOrNull { it.rawValue != null }?.let {
+              delegate?.onBarcodeScanned(BarcodeScanResult(mapBarcodeFormatToString(it.format), it.rawValue!!))
+            }
           }
-
-          // Only process first barcode
-          break
         }
-      }
-      .addOnFailureListener { e ->
-        Log.e("BarcodeScanner", "Barcode scanning failed", e)
-        android.os.Handler(android.os.Looper.getMainLooper()).post {
-          delegate?.onError(BarcodeScannerError.UNKNOWN)
+        .addOnFailureListener(mainExecutor) { e ->
+          Log.e("BarcodeScanner", "Barcode scanning failed", e)
+          if (state.canDeliver(lease)) delegate?.onError(BarcodeScannerError.UNKNOWN)
         }
+        .addOnCompleteListener(mainExecutor) { finish() }
+    } catch (e: Exception) {
+      Log.e("BarcodeScanner", "Could not process camera frame", e)
+      mainExecutor.execute {
+        try {
+          if (state.canDeliver(lease)) delegate?.onError(BarcodeScannerError.UNKNOWN)
+        } finally { finish() }
       }
-      .addOnCompleteListener {
-        imageProxy.close()
-      }
+    }
   }
 
   private fun mapBarcodeType(type: String): Int? {
@@ -221,9 +267,13 @@ class BarcodeScanner(
   }
 
   fun cleanup() {
+    if (closed) return
+    closed = true
     stopScanning()
+    delegate = null
+    onCameraError = null
+    previewView = null
     cameraExecutor.shutdown()
-    barcodeScanner.close()
+    state.close()
   }
 }
-

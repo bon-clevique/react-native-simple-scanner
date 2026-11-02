@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import type { ViewStyle } from 'react-native';
+import { Platform } from 'react-native';
 import SimpleScannerViewNativeComponent, {
   type BarcodeScannedEvent,
   type ScannerErrorEvent,
@@ -81,6 +82,7 @@ const BarcodeScannerViewComponent: React.FC<BarcodeScannerViewProps> = ({
   const lastScannedDataRef = useRef<string | null>(null);
   const lastScannedTimeRef = useRef<number>(0);
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const readyNotifiedRef = useRef(false);
 
   const handleBarcodeScanned = useCallback(
     (event: { nativeEvent: BarcodeScannedEvent }) => {
@@ -141,16 +143,25 @@ const BarcodeScannerViewComponent: React.FC<BarcodeScannerViewProps> = ({
 
   const handleCameraStatusChange = useCallback(
     (event: { nativeEvent: CameraStatusChangeEvent }) => {
+      if (
+        Platform.OS === 'android' &&
+        event.nativeEvent.status === 'ready' &&
+        !readyNotifiedRef.current &&
+        onCameraReady
+      ) {
+        readyNotifiedRef.current = true;
+        onCameraReady();
+      }
       if (onCameraStatusChange) {
         onCameraStatusChange(event.nativeEvent.status as CameraStatus);
       }
     },
-    [onCameraStatusChange]
+    [onCameraReady, onCameraStatusChange]
   );
 
   // Notify when camera is ready (simplified implementation)
   useEffect(() => {
-    if (!isCameraReady && onCameraReady) {
+    if (Platform.OS !== 'android' && !isCameraReady && onCameraReady) {
       // Camera readiness is assumed after a short delay
       // In a real implementation, this would be triggered by a native event
       const timer = setTimeout(() => {

@@ -180,7 +180,7 @@ export default function App() {
       setPermissionStatus(status);
       setLoading(false);
 
-      if (status === 'not-determined') {
+      if (status !== 'granted') {
         const granted = await requestCameraPermission();
         setPermissionStatus(granted ? 'granted' : 'denied');
       }
@@ -443,6 +443,8 @@ type CameraStatus = 'initializing' | 'ready' | 'error' | 'permission-required';
 
 Check current camera permission status without prompting the user.
 
+On Android this returns `granted` or `denied`; `denied` also includes permission that has never been requested. Call `requestCameraPermission()` before mounting the scanner when access is not granted. A rejected request (including “never ask again”) resolves to `false`; users can grant access later in system settings. The iOS statuses remain unchanged.
+
 ```typescript
 import { checkCameraPermission } from 'react-native-simple-scanner';
 
@@ -506,21 +508,21 @@ describe('ScannerScreen', () => {
 - The development and native-build baseline is React Native 0.84.1 with React 19.2.4 and the New Architecture (Fabric).
 - With this baseline, iOS >= 15.1 and Xcode >= 16.1 are required by React Native. The podspec uses React Native's `min_ios_version_supported`, so the minimum follows the host app's React Native version.
 - Node.js must satisfy `^22.23.4 || ^24.22.1 || ^26.12.1`. These floors include the [October 2026 Node.js security fixes](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases), including the eMudhra CA update. Development and CI are pinned to Node.js 24.22.2 in `.nvmrc` and both `.tool-versions` files. This repository enables `engine-strict` to reject incompatible Node.js versions during dependency installation; consumers receive the published `engines.node` requirement, whose enforcement depends on their package-manager settings.
-- Android remains experimental: minimum SDK 24, compile SDK >= 36, AGP >= 8.9.1, and JDK 17. CameraX is pinned consistently to 1.6.2 and the bundled ML Kit barcode model to 17.3.0. Camera permission helpers and `isScanning` are not implemented on Android yet.
+- Android remains experimental: minimum SDK 24, compile SDK >= 36, AGP >= 8.9.1, and JDK 17. CameraX is pinned consistently to 1.6.2 and the bundled ML Kit barcode model to 17.3.0. Permission helpers use `PermissionsAndroid`. `isScanning={false}` pauses detection while keeping the preview, and `barcodeTypes={[]}` disables detection. Backgrounding or detaching the view releases its own camera use cases; resuming or reattaching restores the selected formats and flash setting. Android readiness and error callbacks follow native camera state.
 - TypeScript 5.9 is used for validation. Older React Native and TypeScript versions are not covered by the current checks.
 
 The wildcard peer dependencies allow host apps to choose their React and React Native versions; they do not guarantee compatibility with every version. A successful typecheck or Codegen run does not verify camera capture or barcode recognition on a device.
 
 The Node.js floors are a security baseline checked on 2026-11-01, not a guarantee against future vulnerabilities. When a later security release arrives, update the affected `engines.node` floors in both package manifests and the development pins together. Dependency audits do not check the Node.js executable itself.
 
-### Compatibility checks (2026-11-01)
+### Compatibility checks (2026-11-02)
 
-| React Native / React | Checks                                                                                                    |
-| -------------------- | --------------------------------------------------------------------------------------------------------- |
-| 0.84.1 / 19.2.4      | Library build, typecheck, unit tests, iOS Simulator build, iOS and Android Codegen                        |
-| 0.88.1 / 19.3.1      | Packed-package consumer typecheck with TypeScript 5.9.3 and `skipLibCheck: true`, iOS and Android Codegen |
+| React Native / React       | Checks                                                                                                                                                                             |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.84.1 / 19.2.4            | Library build, typecheck, JS and Android lifecycle unit tests, Android Release build, iOS Simulator build, iOS and Android Codegen                                                 |
+| 0.88.1 / official template | Packed-package consumer typecheck with TypeScript 6 and `skipLibCheck: true`, Android Release build and lifecycle unit tests, iOS Simulator Release build, iOS and Android Codegen |
 
-Native builds and camera behavior on React Native 0.88.1 are not verified. With `skipLibCheck: false`, that version reports errors in its own generated `AnimatedProps`, `VirtualizedList`, and `ReactNativeDocument` declarations; the scanner's declarations resolve without private React Native imports.
+The RN 0.88.1 iPhone Release build was also checked on an iPhone 16 Pro: preview, QR/EAN-13/EAN-8/Code 128 results and torch switching were confirmed. Android camera preview, recognition, torch and device-specific lifecycle behavior have **not** been verified on hardware; code review, unit tests and successful native builds do not establish those results. With `skipLibCheck: false`, RN 0.88.1 reports errors in its own generated declarations; the scanner's declarations resolve without private React Native imports.
 
 ## Troubleshooting
 
