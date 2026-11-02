@@ -1,3 +1,9 @@
+## [0.3.8](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.7...v0.3.8) (2026-11-02)
+
+### Bug Fixes
+
+- **android:** preserve scanner permissions and lifecycle on RN 0.88 ([#163](https://github.com/bon-clevique/react-native-simple-scanner/issues/163)) ([fa6afe1](https://github.com/bon-clevique/react-native-simple-scanner/commit/fa6afe19caf0855ddb4c8ccba7116c00bf0c329e))
+
 ## [0.3.7](https://github.com/bon-clevique/react-native-simple-scanner/compare/v0.3.6...v0.3.7) (2026-11-01)
 
 ### Bug Fixes
