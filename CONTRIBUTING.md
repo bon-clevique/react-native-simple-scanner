@@ -115,6 +115,8 @@ pnpm exec tsc --ignoreConfig --noEmit --skipLibCheck --jsx react-jsx \
 
 The native commands and toolchain setup are in `.github/workflows/rn088-native.yml`. CI builds Android arm64 Release and iOS simulator Release, in addition to the original RN 0.84 checks. Camera preview and barcode decoding still require a physical device; a successful build alone does not establish scan behavior.
 
+For physical camera tests, stop Device Hub's live screen viewing and operate the iPhone itself. The Mac connection can remain available for installation and console logs. During RN 0.88 verification, normal camera frames and QR decoding were confirmed after live viewing stopped; this observation does not establish whether the earlier black frames were a Device Hub restriction or a session fault. See the [device testing instructions](example/IOS_DEVICE_TESTING.md) before diagnosing a black preview as a library failure.
+
 Remove the temporary consumer directory when verification is finished.
 
 ### Sending a pull request
